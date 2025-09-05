@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Comment extends Content {
-    private long id;
+    private Long id;
     private Post post;
     private String content;
 }
