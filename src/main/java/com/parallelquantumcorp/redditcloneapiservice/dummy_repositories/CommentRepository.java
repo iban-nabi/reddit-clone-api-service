@@ -5,39 +5,38 @@ import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 @AllArgsConstructor
 public class CommentRepository {
-    PostRepository postRepository;
+    private final Map<Long, Comment> comments = new HashMap<>();
 
-    public List<Comment> getComments(Long postId){
-        Post post = postRepository.getPost(postId);
-        return new ArrayList<>(post.getComments().values());
+    public List<Comment> getCommentsFromPost(Long postId){
+        return comments.values()
+                .stream()
+                .filter(comment -> comment.getPost().getId().equals(postId)
+                        && !comment.getPost().isArchived()
+                        && !comment.isArchived())
+                .toList();
     }
 
-    public Comment getComment(Long postId, Long commentId){
-        Post post = postRepository.getPost(postId);
-        return post.getComments().get(commentId);
+    public Comment getComment(Long commentId){
+        return comments.get(commentId);
     }
 
-    public void save(Long postId, Comment comment){
-        Post post = postRepository.getPost(postId);
-        Map<Long, Comment> comments = post.getComments();
+    public void save(Comment comment){
         comment.setId(comments.size()+1L);
         comments.put(comment.getId(), comment);
     }
 
-    public void update(Long postId, Comment comment){
-        Post post = postRepository.getPost(postId);
-        post.getComments().put(comment.getId(), comment);
+    public void update(Comment comment){
+        comments.put(comment.getId(), comment);
     }
 
-    public void delete(Long postId, Long commentId){
-        Post post = postRepository.getPost(postId);
-        post.getComments().get(commentId).setArchived(true);
+    public void delete(Long commentId){
+        comments.get(commentId).setArchived(true);
     }
 }

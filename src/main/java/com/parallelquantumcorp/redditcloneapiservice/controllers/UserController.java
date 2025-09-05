@@ -41,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{username}/delete-user")
+    @PatchMapping("/{username}/delete")
     public ResponseEntity<?> deleteUser(@PathVariable String username){
         boolean success = userRepository.delete(username);
         if(!success){

@@ -15,5 +15,4 @@ public class Post extends Content {
     private String content;
     private String tag;
     private User author;
-    private final Map<Long, Comment> comments = new LinkedHashMap<>();
 }

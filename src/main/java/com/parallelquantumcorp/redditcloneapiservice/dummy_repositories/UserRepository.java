@@ -2,12 +2,10 @@ package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Getter
 @Component
 public class UserRepository {
     private final Map<String, User> users = new LinkedHashMap<>();
@@ -25,6 +23,7 @@ public class UserRepository {
             Long id = users.size()+1L;
             user.setId(id);
             users.put(user.getUsername(), user);
+            return user;
         }
         return null;
     }

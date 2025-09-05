@@ -23,7 +23,6 @@ public class UserService {
                 .archived(false)
                 .build();
 
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 }

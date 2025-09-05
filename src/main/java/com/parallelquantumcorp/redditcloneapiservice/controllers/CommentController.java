@@ -6,40 +6,38 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/{postId}/comment")
+@RequestMapping("/comment")
 @AllArgsConstructor
 public class CommentController {
 
     private final CommentRepository commentRepository;
 
-    @GetMapping("/all")
+    @GetMapping("/{postId}/all")
     public ResponseEntity<?> getAllComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(commentRepository.getComments(postId));
+        return ResponseEntity.ok(commentRepository.getCommentsFromPost(postId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getComment(@PathVariable Long postId, @PathVariable Long id) {
-        return ResponseEntity.ok(commentRepository.getComment(postId, id));
+    public ResponseEntity<?> getComment(@PathVariable Long id) {
+        return ResponseEntity.ok(commentRepository.getComment(id));
     }
 
-    @PostMapping("/create-comment")
-    public ResponseEntity<?> createComment(@PathVariable Long postId, @RequestBody Comment comment) {
-        commentRepository.save(postId, comment);
+    @PostMapping("/create")
+    public ResponseEntity<?> createComment(@RequestBody Comment comment) {
+        commentRepository.save(comment);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/update-comment")
-    public ResponseEntity<?> updateComment(@PathVariable Long postId, @RequestBody Comment comment) {
-        commentRepository.update(postId, comment);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateComment(@RequestBody Comment comment) {
+        commentRepository.update(comment);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/delete-comment")
-    public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long id) {
-        commentRepository.delete(postId, id);
+    @PatchMapping("/{id}/delete")
+    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+        commentRepository.delete(id);
         return ResponseEntity.ok().build();
     }
 }

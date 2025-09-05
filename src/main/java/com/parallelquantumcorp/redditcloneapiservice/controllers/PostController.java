@@ -15,7 +15,7 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<?> all() {
-        return ResponseEntity.ok(postRepository.getPosts());
+        return ResponseEntity.ok(postRepository.getAllPosts());
     }
 
     @GetMapping("/{id}")
@@ -23,19 +23,24 @@ public class PostController {
         return ResponseEntity.ok(postRepository.getPost(id));
     }
 
-    @PostMapping("/create-post")
+    @GetMapping("/search/{query}")
+    public ResponseEntity<?> search(@PathVariable String query) {
+        return ResponseEntity.ok(postRepository.searchPost(query));
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<?> createPost(@RequestBody Post post) {
         postRepository.save(post);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/update-post")
-    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody Post post) {
+    @PutMapping("/update")
+    public ResponseEntity<?> updatePost(@RequestBody Post post) {
         postRepository.update(post);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/delete-post")
+    @PatchMapping("/{id}/delete")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postRepository.delete(id);
         return ResponseEntity.ok().build();
