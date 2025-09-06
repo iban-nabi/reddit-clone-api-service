@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.PostResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
@@ -10,7 +10,6 @@ import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -20,7 +19,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public Post createPost(PostResponse postResponse, String subRedditName) {
+    public Post createPost(PostDto postResponse, String subRedditName) {
         SubReddit subReddit;
         User user = userRepository.findByUsername(postResponse.getUser().getUsername());
         if(subRedditName == null){

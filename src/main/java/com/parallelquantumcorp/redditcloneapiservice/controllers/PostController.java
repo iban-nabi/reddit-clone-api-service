@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.PostResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.PostMapper;
@@ -22,7 +22,7 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<?> all() {
-        List<PostResponse> posts = postRepository.getAllPosts()
+        List<PostDto> posts = postRepository.getAllPosts()
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
@@ -40,7 +40,7 @@ public class PostController {
 
     @GetMapping("/search/{query}")
     public ResponseEntity<?> search(@PathVariable String query) {
-        List<PostResponse> posts = postRepository.searchPost(query)
+        List<PostDto> posts = postRepository.searchPost(query)
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
@@ -49,14 +49,14 @@ public class PostController {
 
     @PostMapping("/{subRedditName}/create")
     public ResponseEntity<?> createPostInSubReddit(@PathVariable String subRedditName,
-                                                   @RequestBody PostResponse postDto) {
+                                                   @RequestBody PostDto postDto) {
         Post post = postService.createPost(postDto, subRedditName);
         postRepository.save(post);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPostGlobal(@RequestBody PostResponse postDto) {
+    public ResponseEntity<?> createPostGlobal(@RequestBody PostDto postDto) {
         Post post = postService.createPost(postDto, null);
         postRepository.save(post);
         return ResponseEntity.ok().build();
@@ -64,7 +64,7 @@ public class PostController {
 
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updatePost(@RequestBody PostResponse post) {
+    public ResponseEntity<?> updatePost(@RequestBody PostDto post) {
         boolean success = postRepository.update(postMapper.toEntity(post));
         if(!success){
             return ResponseEntity.notFound().build();

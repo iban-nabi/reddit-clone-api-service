@@ -4,6 +4,7 @@ import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -15,17 +16,26 @@ public class UserRepository {
         if(user != null && !user.isArchived()){
             return user;
         }
-        return users.get(username);
+        return null;
     }
 
-    public User save(User user){
-        if(!users.containsKey(user.getPassword())){
+    public List<User> searchUsers(String username) {
+        return users.values()
+                .stream()
+                .filter(user -> !user.isArchived()
+                        && user.getUsername().toLowerCase()
+                        .contains(username.toLowerCase()))
+                .toList();
+    }
+
+    public boolean save(User user){
+        if(!users.containsKey(user.getUsername())){
             Long id = users.size()+1L;
             user.setId(id);
             users.put(user.getUsername(), user);
-            return user;
+            return true;
         }
-        return null;
+        return false;
     }
 
     public boolean updatePassword(UserRequest userRequest){
