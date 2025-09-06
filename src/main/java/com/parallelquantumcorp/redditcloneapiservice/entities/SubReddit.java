@@ -14,6 +14,5 @@ public class SubReddit {
     private Long id;
     private String name;
     private String description;
-    private Map<String, User> members = new HashMap<>();
     private boolean archived;
 }

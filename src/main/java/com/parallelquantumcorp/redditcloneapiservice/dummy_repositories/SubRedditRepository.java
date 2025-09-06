@@ -1,6 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@AllArgsConstructor
 public class SubRedditRepository {
+    private final SubRedditMembersRepository subRedditMembersRepository;
     private final Map<String, SubReddit> subReddits = new HashMap<>();
 
     public List<SubReddit> getSubReddits() {
@@ -26,6 +29,7 @@ public class SubRedditRepository {
 
     public void save(SubReddit subReddit) {
         subReddits.put(subReddit.getName(), subReddit);
+        subRedditMembersRepository.createSubRedditMembers(subReddit);
     }
 
     public void update(SubReddit subReddit) {
