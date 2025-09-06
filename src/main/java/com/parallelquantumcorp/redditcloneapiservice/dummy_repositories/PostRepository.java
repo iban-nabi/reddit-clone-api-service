@@ -41,11 +41,19 @@ public class PostRepository {
         posts.put(post.getId(), post);
     }
 
-    public void update(Post post){
+    public boolean update(Post post){
+        if(!posts.containsKey(post.getId())){
+            return false;
+        }
         posts.put(post.getId(), post);
+        return true;
     }
 
-    public void delete(Long id){
+    public boolean delete(Long id){
+        if(!posts.containsKey(id)){
+            return false;
+        }
         posts.get(id).setArchived(true);
+        return true;
     }
 }

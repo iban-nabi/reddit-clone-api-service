@@ -1,7 +1,9 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
-import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
+import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class CommentRepository {
     private final Map<Long, Comment> comments = new HashMap<>();
+    private final CommentMapper commentMapper;
 
     public List<Comment> getCommentsFromPost(Long postId){
         return comments.values()
@@ -27,16 +30,24 @@ public class CommentRepository {
         return comments.get(commentId);
     }
 
-    public void save(Comment comment){
-        comment.setId(comments.size()+1L);
-        comments.put(comment.getId(), comment);
+    public void save(CommentDto commentDto){
+        commentDto.setId(comments.size()+1L);
+        comments.put(commentDto.getId(), commentMapper.toEntity(commentDto));
     }
 
-    public void update(Comment comment){
-        comments.put(comment.getId(), comment);
+    public boolean update(CommentUpdateRequest comment){
+        if(!comments.containsKey(comment.getId())){
+            return false;
+        }
+        comments.get(comment.getId()).setContent(comment.getContent());
+        return true;
     }
 
-    public void delete(Long commentId){
+    public boolean delete(Long commentId){
+        if(!comments.containsKey(commentId)){
+            return false;
+        }
         comments.get(commentId).setArchived(true);
+        return true;
     }
 }

@@ -27,16 +27,28 @@ public class SubRedditRepository {
                 .toList();
     }
 
+    public SubReddit getSubReddit(String subRedditName) {
+        return subReddits.get(subRedditName);
+    }
+
     public void save(SubReddit subReddit) {
         subReddits.put(subReddit.getName(), subReddit);
         subRedditMembersRepository.createSubRedditMembers(subReddit);
     }
 
-    public void update(SubReddit subReddit) {
+    public boolean update(SubReddit subReddit) {
+        if(!subReddits.containsKey(subReddit.getName())) {
+            return false;
+        }
         subReddits.put(subReddit.getName(), subReddit);
+        return true;
     }
 
-    public void delete(String name) {
+    public boolean delete(String name) {
+        if(!subReddits.containsKey(name)) {
+            return false;
+        }
         subReddits.get(name).setArchived(true);
+        return true;
     }
 }

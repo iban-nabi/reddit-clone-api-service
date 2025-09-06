@@ -1,6 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.entities;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 

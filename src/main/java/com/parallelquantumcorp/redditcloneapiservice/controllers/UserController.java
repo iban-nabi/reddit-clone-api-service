@@ -28,11 +28,12 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
         User user = userService.createUser(request);
+        userRepository.save(user);
         return ResponseEntity.ok(user);
     }
 
     // to include encryption later on
-    @PutMapping("/update-password")
+    @PatchMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestBody UserRequest request){
         boolean success = userRepository.updatePassword(request);
         if(!success){
