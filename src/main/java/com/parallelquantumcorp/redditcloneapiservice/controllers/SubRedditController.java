@@ -23,7 +23,7 @@ public class SubRedditController {
         return ResponseEntity.ok(subReddits);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{query}")
     public ResponseEntity<?> searchSubReddit(@PathVariable String query){
         List<SubRedditResponse> subReddits = subRedditService.searchSubReddits(query);
         return ResponseEntity.ok(subReddits);

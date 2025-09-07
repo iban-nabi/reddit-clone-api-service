@@ -9,5 +9,4 @@ public class SubRedditResponse {
     private Long id;
     private String name;
     private String description;
-    private UserResponse creator;
 }

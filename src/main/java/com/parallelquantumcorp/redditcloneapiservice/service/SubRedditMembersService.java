@@ -34,7 +34,7 @@ public class SubRedditMembersService {
         User user = userRepository.findByUsername(userResponse.getUsername());
         if(user!=null
                 && subRedditMembersRepository.subRedditExists(subRedditName)
-                && subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
+                && !subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
             subRedditMembersRepository.addMember(subRedditName, user);
             return true;
         }

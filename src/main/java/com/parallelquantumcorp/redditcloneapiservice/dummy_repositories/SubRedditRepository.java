@@ -32,6 +32,7 @@ public class SubRedditRepository {
     }
 
     public void save(SubReddit subReddit) {
+        subReddit.setId(subReddits.size()+1L);
         subReddits.put(subReddit.getName(), subReddit);
     }
 

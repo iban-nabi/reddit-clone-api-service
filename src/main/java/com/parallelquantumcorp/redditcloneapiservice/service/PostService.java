@@ -30,6 +30,7 @@ public class PostService {
     public List<PostResponse> getAllPosts() {
         return postRepository.getAll()
                 .stream()
+                .filter(post -> !post.isArchived())
                 .map(postMapper::toDto)
                 .toList();
     }
@@ -37,13 +38,14 @@ public class PostService {
     public List<PostResponse> getAllSubRedditPosts(String subRedditName) {
         return postRepository.getAllSubRedditPosts(subRedditName)
                 .stream()
+                .filter(post -> !post.isArchived())
                 .map(postMapper::toDto)
                 .toList();
     }
 
     public PostResponse getPostById(Long id){
         Post post = postRepository.getPost(id);
-        if(post==null){
+        if(post==null || post.isArchived()){
             return null;
         }
         return postMapper.toDto(post);
@@ -52,12 +54,14 @@ public class PostService {
     public List<PostResponse> searchPost(String query){
         return postRepository.searchPost(query)
                 .stream()
+                .filter(post -> !post.isArchived())
                 .map(postMapper::toDto)
                 .toList();
     }
 
     public void createPost(PostRequest postRequest, String subRedditName) {
         SubReddit subReddit;
+        // add check user
         User user = userRepository.findByUsername(postRequest.getUser().getUsername());
 
         if(subRedditName == null){
@@ -82,7 +86,7 @@ public class PostService {
     }
 
     public boolean updatePost(Long id, UpdatePostRequest updatePostRequest){
-        if(postRepository.existsById(id)){
+        if(postRepository.existsById(id) && !postRepository.getPost(id).isArchived()){
             postRepository.update(id, updatePostRequest);
             return true;
         }
@@ -90,7 +94,7 @@ public class PostService {
     }
 
     public boolean deletePost(Long id){
-        if(postRepository.existsById(id)){
+        if(postRepository.existsById(id) && !postRepository.getPost(id).isArchived()){
             postRepository.delete(id);
             return true;
         }

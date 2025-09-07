@@ -5,8 +5,10 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
+import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
+import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class CommentService {
 
     //mappers
     private final CommentMapper commentMapper;
+    private final UserRepository userRepository;
 
     // to be updated : to include retrieving of mapped items
     public List<CommentDto> getAllCommentsFromPost(Long postId){
@@ -44,6 +47,8 @@ public class CommentService {
     public boolean createComment(Long postId, CommentRequest commentRequest) {
         Post post = postRepository.getPost(postId);
 
+        User user = userRepository.findByUsername(commentRequest.getUser().getUsername());
+
         if(post != null){
             Comment parent = (commentRequest.getParent()!=null) ?
                     commentRepository.getComment(commentRequest.getParent().getId()) : null;
@@ -51,6 +56,7 @@ public class CommentService {
             Comment comment = Comment.builder()
                     .post(post)
                     .content(commentRequest.getContent())
+                    .user(user)
                     .parent(parent)
                     .createdAt(LocalDateTime.now())
                     .upvotes(0)
