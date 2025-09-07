@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class CommentDto {
+public class CommentResponse {
     private Long id;
-    private CommentDto parent;
+    private CommentResponse parent;
     private String content;
     private UserResponse user;
     private int upvotes;

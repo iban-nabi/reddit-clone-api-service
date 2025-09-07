@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
@@ -20,13 +20,13 @@ public class CommentController {
 
     @GetMapping("/{postId}/all")
     public ResponseEntity<?> getAllCommentsFromPost(@PathVariable Long postId) {
-        List<CommentDto> comments = commentService.getAllCommentsFromPost(postId);
+        List<CommentResponse> comments = commentService.getAllCommentsFromPost(postId);
         return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getComment(@PathVariable Long id) {
-        CommentDto comment = commentService.getComment(id);
+        CommentResponse comment = commentService.getComment(id);
         if (comment == null) {
             return ResponseEntity.notFound().build();
         }

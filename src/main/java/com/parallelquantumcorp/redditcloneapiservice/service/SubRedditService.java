@@ -28,6 +28,7 @@ public class SubRedditService {
     public List<SubRedditResponse> getAllSubReddits(){
         return subRedditRepository.getSubReddits()
                 .stream()
+                .filter(subReddit -> !subReddit.isArchived())
                 .map(subRedditMapper::toDto)
                 .toList();
     }
@@ -35,6 +36,7 @@ public class SubRedditService {
     public List<SubRedditResponse> searchSubReddits(String query){
         return subRedditRepository.searchSubReddit(query)
                 .stream()
+                .filter(subReddit -> !subReddit.isArchived())
                 .map(subRedditMapper::toDto)
                 .toList();
     }
@@ -46,7 +48,7 @@ public class SubRedditService {
 
         User user = userRepository.findByUsername(subRedditRequest.getCreator().getUsername());
 
-        if(user==null){
+        if(user==null || user.isArchived()){
             return false;
         }
 
@@ -63,7 +65,8 @@ public class SubRedditService {
     }
 
     public boolean updateSubReddit(String name, UpdateSubRedditRequest updateSubRedditRequest){
-        if(subRedditRepository.existsByName(name)){
+        if(subRedditRepository.existsByName(name)
+                && !subRedditRepository.getSubReddit(name).isArchived()){
             subRedditRepository.update(name, updateSubRedditRequest);
             return true;
         }
@@ -71,7 +74,8 @@ public class SubRedditService {
     }
 
     public boolean deleteSubReddit(String name){
-        if(subRedditRepository.existsByName(name)){
+        if(subRedditRepository.existsByName(name)
+                && !subRedditRepository.getSubReddit(name).isArchived()){
             subRedditRepository.delete(name);
             return true;
         }

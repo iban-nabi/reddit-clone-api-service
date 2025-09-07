@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
@@ -29,16 +29,17 @@ public class CommentService {
     private final UserRepository userRepository;
 
     // to be updated : to include retrieving of mapped items
-    public List<CommentDto> getAllCommentsFromPost(Long postId){
+    public List<CommentResponse> getAllCommentsFromPost(Long postId){
         return commentRepository.getCommentsFromPost(postId)
                 .stream()
+                .filter(comment -> !comment.isArchived())
                 .map(commentMapper::toDto)
                 .toList();
     }
 
-    public CommentDto getComment(Long commentId){
+    public CommentResponse getComment(Long commentId){
         Comment comment = commentRepository.getComment(commentId);
-        if(comment == null){
+        if(comment == null || comment.isArchived()){
             return null;
         }
         return commentMapper.toDto(comment);
@@ -71,16 +72,18 @@ public class CommentService {
     }
 
     public boolean updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
-        if(commentRepository.existsById(id)){
+        if(commentRepository.existsById(id) &&
+                !commentRepository.getComment(id).isArchived()){
             commentRepository.update(id, commentUpdateRequest);
             return true;
         }
         return false;
     }
 
-    public boolean deleteComment(Long commentId) {
-        if(commentRepository.existsById(commentId)){
-            commentRepository.delete(commentId);
+    public boolean deleteComment(Long id) {
+        if(commentRepository.existsById(id) &&
+                !commentRepository.getComment(id).isArchived()){
+            commentRepository.delete(id);
             return true;
         }
         return false;

@@ -26,13 +26,14 @@ public class SubRedditMembersService {
         return subRedditMembers.getMembers()
                 .values()
                 .stream()
+                .filter(user -> !user.isArchived())
                 .map(userMapper::toDtoResponse)
                 .toList();
     }
 
     public boolean joinSubReddit(String subRedditName, UserResponse userResponse){
         User user = userRepository.findByUsername(userResponse.getUsername());
-        if(user!=null
+        if(user!=null && !user.isArchived()
                 && subRedditMembersRepository.subRedditExists(subRedditName)
                 && !subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
             subRedditMembersRepository.addMember(subRedditName, user);
@@ -43,7 +44,8 @@ public class SubRedditMembersService {
 
     public boolean leaveSubReddit(String subRedditName, UserResponse userResponse){
         User user = userRepository.findByUsername(userResponse.getUsername());
-        if(user!=null && subRedditMembersRepository.subRedditExists(subRedditName)
+        if(user!=null && !user.isArchived()
+                && subRedditMembersRepository.subRedditExists(subRedditName)
                 && subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
             subRedditMembersRepository.removeMember(subRedditName, user);
             return true;

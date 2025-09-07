@@ -27,6 +27,7 @@ public class UserService {
     public List<UserResponse> searchUsers(String query){
         return userRepository.searchUsers(query)
                 .stream()
+                .filter(user -> !user.isArchived())
                 .map(userMapper::toDtoResponse)
                 .toList();
     }
@@ -49,7 +50,8 @@ public class UserService {
 
     public boolean updatePassword(String username,
                                   ChangePasswordRequest changePasswordRequest) {
-        if(userRepository.existByUsername(username)){
+        if(userRepository.existByUsername(username) &&
+            !userRepository.findByUsername(username).isArchived()){
             userRepository.updatePassword(username, changePasswordRequest);
             return true;
         }
@@ -57,7 +59,8 @@ public class UserService {
     }
 
     public boolean deleteUser(String username) {
-        if(userRepository.existByUsername(username)){
+        if(userRepository.existByUsername(username)&&
+                !userRepository.findByUsername(username).isArchived()){
             userRepository.delete(username);
             return true;
         }

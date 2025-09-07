@@ -86,7 +86,8 @@ public class PostService {
     }
 
     public boolean updatePost(Long id, UpdatePostRequest updatePostRequest){
-        if(postRepository.existsById(id) && !postRepository.getPost(id).isArchived()){
+        if(postRepository.existsById(id)
+                && !postRepository.getPost(id).isArchived()){
             postRepository.update(id, updatePostRequest);
             return true;
         }
@@ -94,7 +95,8 @@ public class PostService {
     }
 
     public boolean deletePost(Long id){
-        if(postRepository.existsById(id) && !postRepository.getPost(id).isArchived()){
+        if(postRepository.existsById(id)
+                && !postRepository.getPost(id).isArchived()){
             postRepository.delete(id);
             return true;
         }
