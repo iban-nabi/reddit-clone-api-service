@@ -1,14 +1,11 @@
 package com.parallelquantumcorp.redditcloneapiservice.dtos;
 
+import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.Mapper;
 
-@Setter
 @Getter
-public class SubRedditDto {
-    private Long id;
-    private String name;
+@Setter
+public class UpdateSubRedditRequest {
     private String description;
-    private UserDto creator;
 }

@@ -1,9 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
-import com.parallelquantumcorp.redditcloneapiservice.entities.User;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import com.parallelquantumcorp.redditcloneapiservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,29 +15,26 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
-        User user = userRepository.findByUsername(username);
+        UserDto user = userService.getUser(username);
         if (user == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userMapper.toDtoResponse(user));
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<?> searchUsers(@PathVariable String username) {
-        List<User> users = userRepository.searchUsers(username);
-        return ResponseEntity.ok(users.stream().map(userMapper::toDtoResponse).toList());
+    public ResponseEntity<?> searchUsers(@PathVariable String query) {
+        List<UserDto> users = userService.searchUsers(query);
+        return ResponseEntity.ok(users);
     }
     
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
-        User user = userService.createUser(request);
-        boolean success = userRepository.save(user);
+    public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
+        boolean success = userService.createUser(userRequest);
         if(!success){
             return ResponseEntity.badRequest().build();
         }
@@ -46,9 +42,9 @@ public class UserController {
     }
 
     // to include encryption later on
-    @PatchMapping("/update-password")
-    public ResponseEntity<?> updatePassword(@RequestBody UserRequest request){
-        boolean success = userRepository.updatePassword(request);
+    @PatchMapping("/{username}/update-password")
+    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request){
+        boolean success = userService.updatePassword(username, request);
         if(!success){
             return ResponseEntity.badRequest().build();
         }
@@ -57,7 +53,7 @@ public class UserController {
 
     @PatchMapping("/{username}/delete")
     public ResponseEntity<?> deleteUser(@PathVariable String username){
-        boolean success = userRepository.delete(username);
+        boolean success = userService.deleteUser(username);
         if(!success){
             return ResponseEntity.badRequest().build();
         }

@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentDto {
     private Long id;
-    private Post post;
+    private PostDto post;
+    private CommentDto parent;
     private String content;
-    private User user;
+    private UserDto user;
     private int upvotes;
     private int downvotes;
     private LocalDateTime createdAt;

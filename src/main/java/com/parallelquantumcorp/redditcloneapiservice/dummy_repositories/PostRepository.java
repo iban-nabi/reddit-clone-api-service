@@ -13,7 +13,7 @@ public class PostRepository {
         return posts.get(id);
     }
 
-    public List<Post> getAllPosts(){
+    public List<Post> getAll(){
         return new ArrayList<>(posts.values());
     }
 
@@ -42,18 +42,16 @@ public class PostRepository {
     }
 
     public boolean update(Post post){
-        if(!posts.containsKey(post.getId())){
-            return false;
-        }
         posts.put(post.getId(), post);
         return true;
     }
 
     public boolean delete(Long id){
-        if(!posts.containsKey(id)){
-            return false;
-        }
         posts.get(id).setArchived(true);
         return true;
+    }
+
+    public boolean existsById(Long id){
+        return posts.containsKey(id);
     }
 }

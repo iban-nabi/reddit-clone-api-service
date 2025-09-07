@@ -1,9 +1,10 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.SubRedditDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdateSubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
-import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.SubRedditMapper;
+import com.parallelquantumcorp.redditcloneapiservice.service.SubRedditService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,36 +15,34 @@ import java.util.List;
 @RequestMapping("/sub-reddit")
 @AllArgsConstructor
 public class SubRedditController {
-    private final SubRedditRepository subRedditRepository;
-    private final SubRedditMapper subRedditMapper;
+    //services
+    private final SubRedditService subRedditService;
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllSubReddit(){
-        List<SubRedditDto> subReddits = subRedditRepository.getSubReddits()
-                .stream()
-                .map(subRedditMapper::toDto)
-                .toList();
+    public ResponseEntity<?> getAllSubReddits(){
+        List<SubRedditDto> subReddits = subRedditService.getAllSubReddits();
         return ResponseEntity.ok(subReddits);
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<?> searchSubReddit(@PathVariable String name){
-        List<SubRedditDto> subReddits = subRedditRepository.searchSubReddit(name)
-                .stream()
-                .map(subRedditMapper::toDto)
-                .toList();
+    public ResponseEntity<?> searchSubReddit(@PathVariable String query){
+        List<SubRedditDto> subReddits = subRedditService.searchSubReddits(query);
         return ResponseEntity.ok(subReddits);
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createSubReddit(@RequestBody SubRedditDto subRedditDto){
-        subRedditRepository.save(subRedditMapper.toEntity(subRedditDto));
+        boolean success = subRedditService.createSubReddit(subRedditDto);
+        if(!success){
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateSubReddit(@RequestBody SubReddit subReddit){
-        boolean success = subRedditRepository.update(subReddit);
+    @PatchMapping("/{name}/update")
+    public ResponseEntity<?> updateSubReddit(@PathVariable String name,
+                                             @RequestBody UpdateSubRedditRequest updateSubRedditRequest){
+        boolean success = subRedditService.updateSubReddit(name, updateSubRedditRequest);
         if(!success){
             return ResponseEntity.noContent().build();
         }
@@ -52,11 +51,10 @@ public class SubRedditController {
 
     @PatchMapping("/{name}/delete")
     public ResponseEntity<?> deleteSubReddit(@PathVariable String name){
-        boolean success = subRedditRepository.delete(name);
+        boolean success = subRedditService.deleteSubReddit(name);
         if(!success){
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok().build();
     }
-
 }

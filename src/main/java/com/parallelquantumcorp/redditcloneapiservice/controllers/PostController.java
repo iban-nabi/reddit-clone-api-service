@@ -16,56 +16,46 @@ import java.util.List;
 @AllArgsConstructor
 public class PostController {
 
-    private final PostRepository postRepository;
     private final PostService postService;
-    private final PostMapper postMapper;
 
     @GetMapping("/all")
-    public ResponseEntity<?> all() {
-        List<PostDto> posts = postRepository.getAllPosts()
-                .stream()
-                .map(postMapper::toDto)
-                .toList();
+    public ResponseEntity<?> getAllPosts() {
+        List<PostDto> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPost(@PathVariable Long id) {
-        Post post = postRepository.getPost(id);
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+        PostDto post = postService.getPostById(id) ;
         if(post==null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(postMapper.toDto(post));
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/search/{query}")
-    public ResponseEntity<?> search(@PathVariable String query) {
-        List<PostDto> posts = postRepository.searchPost(query)
-                .stream()
-                .map(postMapper::toDto)
-                .toList();
+    public ResponseEntity<?> searchPost(@PathVariable String query) {
+        List<PostDto> posts = postService.searchPost(query);
         return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/{subRedditName}/create")
     public ResponseEntity<?> createPostInSubReddit(@PathVariable String subRedditName,
                                                    @RequestBody PostDto postDto) {
-        Post post = postService.createPost(postDto, subRedditName);
-        postRepository.save(post);
+        postService.createPost(postDto, subRedditName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createPostGlobal(@RequestBody PostDto postDto) {
-        Post post = postService.createPost(postDto, null);
-        postRepository.save(post);
+        postService.createPost(postDto, null);
         return ResponseEntity.ok().build();
     }
 
 
     @PatchMapping("/update")
     public ResponseEntity<?> updatePost(@RequestBody PostDto post) {
-        boolean success = postRepository.update(postMapper.toEntity(post));
+        boolean success = postService.updatePost(post);
         if(!success){
             return ResponseEntity.notFound().build();
         }
@@ -74,7 +64,7 @@ public class PostController {
 
     @PatchMapping("/{id}/delete")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        boolean  success = postRepository.delete(id);
+        boolean  success = postService.deletePost(id);
         if(!success){
             return ResponseEntity.notFound().build();
         }

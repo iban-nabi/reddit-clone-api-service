@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
 import org.springframework.stereotype.Component;
@@ -38,22 +39,15 @@ public class UserRepository {
         return false;
     }
 
-    public boolean updatePassword(UserRequest userRequest){
-        User user = users.get(userRequest.getUsername());
-        if(user != null && !user.isArchived()){
-            user.setPassword(userRequest.getPassword());
-            users.put(user.getUsername(), user);
-            return true;
-        }
-        return false;
+    public void updatePassword(String username, ChangePasswordRequest request){
+        users.get(username).setPassword(request.getPassword());
     }
 
-    public boolean delete(String username){
-        User user = users.get(username);
-        if(user != null && !user.isArchived()){
-            users.get(username).setArchived(true);
-            return true;
-        }
-        return false;
+    public void delete(String username){
+        users.get(username).setArchived(true);
+    }
+
+    public boolean existByUsername(String username){
+        return users.containsKey(username);
     }
 }

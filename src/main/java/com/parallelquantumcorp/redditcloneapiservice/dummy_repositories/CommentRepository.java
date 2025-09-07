@@ -15,7 +15,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class CommentRepository {
     private final Map<Long, Comment> comments = new HashMap<>();
-    private final CommentMapper commentMapper;
 
     public List<Comment> getCommentsFromPost(Long postId){
         return comments.values()
@@ -30,24 +29,20 @@ public class CommentRepository {
         return comments.get(commentId);
     }
 
-    public void save(CommentDto commentDto){
-        commentDto.setId(comments.size()+1L);
-        comments.put(commentDto.getId(), commentMapper.toEntity(commentDto));
+    public void save(Comment comment){
+        comment.setId(comments.size()+1L);
+        comments.put(comment.getId(), comment);
     }
 
-    public boolean update(CommentUpdateRequest comment){
-        if(!comments.containsKey(comment.getId())){
-            return false;
-        }
+    public void update(CommentUpdateRequest comment){
         comments.get(comment.getId()).setContent(comment.getContent());
-        return true;
     }
 
-    public boolean delete(Long commentId){
-        if(!comments.containsKey(commentId)){
-            return false;
-        }
+    public void delete(Long commentId){
         comments.get(commentId).setArchived(true);
-        return true;
+    }
+
+    public boolean existsById(Long id){
+        return comments.containsKey(id);
     }
 }

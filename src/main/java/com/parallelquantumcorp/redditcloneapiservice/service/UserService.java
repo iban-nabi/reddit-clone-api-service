@@ -1,12 +1,16 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,12 +18,49 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User createUser(UserRequest userRequest) {
-        return User.builder()
+    private final UserMapper userMapper;
+
+    public UserDto getUser(String username){
+        return userMapper.toDtoResponse(userRepository.findByUsername(username)) ;
+    }
+
+    public List<UserDto> searchUsers(String query){
+        return userRepository.searchUsers(query)
+                .stream()
+                .map(userMapper::toDtoResponse)
+                .toList();
+    }
+
+    public boolean createUser(UserRequest userRequest) {
+        if(userRepository.existByUsername(userRequest.getUsername())){
+            return false;
+        }
+
+        User user = User.builder()
                 .username(userRequest.getUsername())
                 .password(userRequest.getPassword())
                 .birthday(LocalDate.now())
                 .archived(false)
                 .build();
+
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean updatePassword(String username,
+                                  ChangePasswordRequest changePasswordRequest) {
+        if(userRepository.existByUsername(username)){
+            userRepository.updatePassword(username, changePasswordRequest);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteUser(String username) {
+        if(userRepository.existByUsername(username)){
+            userRepository.delete(username);
+            return true;
+        }
+        return false;
     }
 }

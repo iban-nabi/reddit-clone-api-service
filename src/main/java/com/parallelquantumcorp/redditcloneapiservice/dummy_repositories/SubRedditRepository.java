@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdateSubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,6 @@ import java.util.Map;
 @Component
 @AllArgsConstructor
 public class SubRedditRepository {
-    private final SubRedditMembersRepository subRedditMembersRepository;
     private final Map<String, SubReddit> subReddits = new HashMap<>();
 
     public List<SubReddit> getSubReddits() {
@@ -33,14 +33,10 @@ public class SubRedditRepository {
 
     public void save(SubReddit subReddit) {
         subReddits.put(subReddit.getName(), subReddit);
-        subRedditMembersRepository.createSubRedditMembers(subReddit);
     }
 
-    public boolean update(SubReddit subReddit) {
-        if(!subReddits.containsKey(subReddit.getName())) {
-            return false;
-        }
-        subReddits.put(subReddit.getName(), subReddit);
+    public boolean update(String name, UpdateSubRedditRequest updateSubRedditRequest) {
+        subReddits.get(name).setDescription(updateSubRedditRequest.getDescription());
         return true;
     }
 
@@ -50,5 +46,9 @@ public class SubRedditRepository {
         }
         subReddits.get(name).setArchived(true);
         return true;
+    }
+
+    public boolean existsByName(String name) {
+        return subReddits.containsKey(name);
     }
 }

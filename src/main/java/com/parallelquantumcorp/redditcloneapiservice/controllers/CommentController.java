@@ -5,6 +5,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
+import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,36 +17,36 @@ import java.util.List;
 @AllArgsConstructor
 public class CommentController {
 
-    private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
+    // service
+    private final CommentService commentService;
 
     @GetMapping("/{postId}/all")
-    public ResponseEntity<?> getAllComments(@PathVariable Long postId) {
-        List<CommentDto> comments = commentRepository.getCommentsFromPost(postId)
-                .stream()
-                .map(commentMapper::toDto)
-                .toList();
+    public ResponseEntity<?> getAllCommentsFromPost(@PathVariable Long postId) {
+        List<CommentDto> comments = commentService.getAllCommentsFromPost(postId);
         return ResponseEntity.ok(comments);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getComment(@PathVariable Long id) {
-        Comment comment = commentRepository.getComment(id);
+        CommentDto comment = commentService.getComment(id);
         if (comment == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(commentMapper.toDto(comment));
+        return ResponseEntity.ok(comment);
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto) {
-        commentRepository.save(commentDto);
+        boolean success = commentService.createComment(commentDto);
+        if (!success){
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequest request) {
-        boolean success = commentRepository.update(request);
+    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequest commentUpdateRequest) {
+        boolean success = commentService.updateComment(commentUpdateRequest);
         if(!success){
             return ResponseEntity.notFound().build();
         }
@@ -54,7 +55,7 @@ public class CommentController {
 
     @PatchMapping("/{id}/delete")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
-        boolean success = commentRepository.delete(id);
+        boolean success = commentService.deleteComment(id);
         if(!success){
             return ResponseEntity.notFound().build();
         }
