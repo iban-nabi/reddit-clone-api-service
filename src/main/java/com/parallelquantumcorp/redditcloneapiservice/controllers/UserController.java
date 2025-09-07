@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
 
@@ -42,8 +42,9 @@ public class UserController {
     }
 
     // to include encryption later on
-    @PatchMapping("/{username}/update-password")
-    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request){
+    @PatchMapping("/update-password/{username}")
+    public ResponseEntity<?> updatePassword(@PathVariable String username,
+                                            @RequestBody ChangePasswordRequest request){
         boolean success = userService.updatePassword(username, request);
         if(!success){
             return ResponseEntity.badRequest().build();
@@ -51,7 +52,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{username}/delete")
+    @PatchMapping("/delete/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username){
         boolean success = userService.deleteUser(username);
         if(!success){

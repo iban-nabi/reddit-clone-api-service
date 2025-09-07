@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,10 @@ public class PostRepository {
 
     }
 
-    public List<Post> getAllSubRedditPosts(Long subredditId){
+    public List<Post> getAllSubRedditPosts(String subRedditName){
         return posts.values()
                 .stream()
-                .filter(post -> post.getSubreddit().getId()==subredditId
+                .filter(post -> Objects.equals(post.getSubreddit().getName(), subRedditName)
                         && post.getSubreddit().isArchived()
                         && !post.isArchived())
                 .toList();
@@ -41,8 +42,8 @@ public class PostRepository {
         posts.put(post.getId(), post);
     }
 
-    public boolean update(Post post){
-        posts.put(post.getId(), post);
+    public boolean update(Long id, UpdatePostRequest updatePostRequest){
+        posts.get(id).setContent(updatePostRequest.getContent());
         return true;
     }
 

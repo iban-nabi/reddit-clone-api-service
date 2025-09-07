@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sub-reddit/{subRedditName}")
+@RequestMapping("/api/sub-reddit/{subRedditName}")
 @AllArgsConstructor
 public class SubRedditMembersController {
     private final SubRedditMembersService subRedditMembersService;

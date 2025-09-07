@@ -2,8 +2,6 @@ package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.SubRedditDto;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdateSubRedditRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.SubRedditMapper;
 import com.parallelquantumcorp.redditcloneapiservice.service.SubRedditService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sub-reddit")
+@RequestMapping("/api/sub-reddit")
 @AllArgsConstructor
 public class SubRedditController {
     //services
@@ -39,7 +37,7 @@ public class SubRedditController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{name}/update")
+    @PatchMapping("/update/{name}")
     public ResponseEntity<?> updateSubReddit(@PathVariable String name,
                                              @RequestBody UpdateSubRedditRequest updateSubRedditRequest){
         boolean success = subRedditService.updateSubReddit(name, updateSubRedditRequest);
@@ -49,7 +47,7 @@ public class SubRedditController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{name}/delete")
+    @PatchMapping("/delete/{name}")
     public ResponseEntity<?> deleteSubReddit(@PathVariable String name){
         boolean success = subRedditService.deleteSubReddit(name);
         if(!success){

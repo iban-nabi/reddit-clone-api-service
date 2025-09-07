@@ -2,9 +2,6 @@ package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
-import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
 import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/comment")
 @AllArgsConstructor
 public class CommentController {
 
@@ -44,16 +41,17 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequest commentUpdateRequest) {
-        boolean success = commentService.updateComment(commentUpdateRequest);
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateComment(@PathVariable Long id,
+                                           @RequestBody CommentUpdateRequest commentUpdateRequest) {
+        boolean success = commentService.updateComment(id, commentUpdateRequest);
         if(!success){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}/delete")
+    @PatchMapping("/delete/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
         boolean success = commentService.deleteComment(id);
         if(!success){

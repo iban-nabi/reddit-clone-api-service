@@ -1,9 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +32,8 @@ public class CommentRepository {
         comments.put(comment.getId(), comment);
     }
 
-    public void update(CommentUpdateRequest comment){
-        comments.get(comment.getId()).setContent(comment.getContent());
+    public void update(Long id, CommentUpdateRequest comment){
+        comments.get(id).setContent(comment.getContent());
     }
 
     public void delete(Long commentId){

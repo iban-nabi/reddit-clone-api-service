@@ -1,18 +1,17 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
-import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
-import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.PostMapper;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.PostService;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 @AllArgsConstructor
 public class PostController {
 
@@ -21,6 +20,12 @@ public class PostController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllPosts() {
         List<PostDto> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/all/{subRedditName}")
+    public ResponseEntity<?> getAllSubRedditPosts(@PathVariable String subRedditName) {
+        List<PostDto> posts = postService.getAllSubRedditPosts(subRedditName);
         return ResponseEntity.ok(posts);
     }
 
@@ -53,16 +58,17 @@ public class PostController {
     }
 
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updatePost(@RequestBody PostDto post) {
-        boolean success = postService.updatePost(post);
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Long id,
+                                        @RequestBody UpdatePostRequest updatePostRequest) {
+        boolean success = postService.updatePost(id, updatePostRequest);
         if(!success){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}/delete")
+    @PatchMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         boolean  success = postService.deletePost(id);
         if(!success){

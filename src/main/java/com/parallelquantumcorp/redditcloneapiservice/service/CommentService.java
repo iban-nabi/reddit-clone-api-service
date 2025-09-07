@@ -63,9 +63,9 @@ public class CommentService {
         return false;
     }
 
-    public boolean updateComment(CommentUpdateRequest commentUpdateRequest) {
-        if(commentRepository.existsById(commentUpdateRequest.getId())){
-            commentRepository.update(commentUpdateRequest);
+    public boolean updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
+        if(commentRepository.existsById(id)){
+            commentRepository.update(id, commentUpdateRequest);
             return true;
         }
         return false;

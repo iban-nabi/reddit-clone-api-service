@@ -1,6 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
@@ -26,10 +27,16 @@ public class PostService {
 
     //mappers
     private final PostMapper postMapper;
-    private final UserMapper userMapper;
 
     public List<PostDto> getAllPosts() {
         return postRepository.getAll()
+                .stream()
+                .map(postMapper::toDto)
+                .toList();
+    }
+
+    public List<PostDto> getAllSubRedditPosts(String subRedditName) {
+        return postRepository.getAllSubRedditPosts(subRedditName)
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
@@ -75,10 +82,9 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public boolean updatePost(PostDto post){
-        if(postRepository.existsById(post.getId())){
-            Post updatedPost = postMapper.toEntity(post);
-            postRepository.update(updatedPost);
+    public boolean updatePost(Long id, UpdatePostRequest updatePostRequest){
+        if(postRepository.existsById(id)){
+            postRepository.update(id, updatePostRequest);
             return true;
         }
         return false;
