@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.service.SubRedditMembersService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +16,13 @@ public class SubRedditMembersController {
 
     @GetMapping("/members")
     public ResponseEntity<?> getMembers(@PathVariable String subRedditName){
-        List<UserDto> members = subRedditMembersService.getMembers(subRedditName);
+        List<UserResponse> members = subRedditMembersService.getMembers(subRedditName);
         return ResponseEntity.ok(members);
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> joinSubReddit(@PathVariable String subRedditName, @RequestBody UserDto userDto){
-        boolean success = subRedditMembersService.joinSubReddit(subRedditName,userDto);
+    public ResponseEntity<?> joinSubReddit(@PathVariable String subRedditName, @RequestBody UserResponse userResponse){
+        boolean success = subRedditMembersService.joinSubReddit(subRedditName, userResponse);
         if(!success){
             return ResponseEntity.notFound().build();
         }
@@ -30,8 +30,8 @@ public class SubRedditMembersController {
     }
 
     @PostMapping("/leave")
-    public ResponseEntity<?> leave(@PathVariable String subRedditName, @RequestBody UserDto userDto){
-        boolean success = subRedditMembersService.leaveSubReddit(subRedditName,userDto);
+    public ResponseEntity<?> leave(@PathVariable String subRedditName, @RequestBody UserResponse userResponse){
+        boolean success = subRedditMembersService.leaveSubReddit(subRedditName, userResponse);
         if(!success){
             return ResponseEntity.notFound().build();
         }

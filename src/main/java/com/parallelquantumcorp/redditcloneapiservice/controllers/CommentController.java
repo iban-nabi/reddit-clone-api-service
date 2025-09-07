@@ -1,7 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,9 @@ public class CommentController {
         return ResponseEntity.ok(comment);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto) {
-        boolean success = commentService.createComment(commentDto);
+    @PostMapping("/{postId}/create")
+    public ResponseEntity<?> createComment(@PathVariable Long postId, @RequestBody CommentRequest commentRequest) {
+        boolean success = commentService.createComment(postId, commentRequest);
         if (!success){
             return ResponseEntity.badRequest().build();
         }

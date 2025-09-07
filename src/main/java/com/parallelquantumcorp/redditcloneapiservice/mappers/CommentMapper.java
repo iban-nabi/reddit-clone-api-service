@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.mappers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentDto;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import org.mapstruct.Mapper;
 

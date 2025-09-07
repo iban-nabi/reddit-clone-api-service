@@ -1,10 +1,10 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.PostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.PostService;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +19,19 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPosts() {
-        List<PostDto> posts = postService.getAllPosts();
+        List<PostResponse> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/all/{subRedditName}")
     public ResponseEntity<?> getAllSubRedditPosts(@PathVariable String subRedditName) {
-        List<PostDto> posts = postService.getAllSubRedditPosts(subRedditName);
+        List<PostResponse> posts = postService.getAllSubRedditPosts(subRedditName);
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        PostDto post = postService.getPostById(id) ;
+        PostResponse post = postService.getPostById(id) ;
         if(post==null){
             return ResponseEntity.notFound().build();
         }
@@ -40,20 +40,20 @@ public class PostController {
 
     @GetMapping("/search/{query}")
     public ResponseEntity<?> searchPost(@PathVariable String query) {
-        List<PostDto> posts = postService.searchPost(query);
+        List<PostResponse> posts = postService.searchPost(query);
         return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/{subRedditName}/create")
     public ResponseEntity<?> createPostInSubReddit(@PathVariable String subRedditName,
-                                                   @RequestBody PostDto postDto) {
-        postService.createPost(postDto, subRedditName);
+                                                   @RequestBody PostRequest postRequest) {
+        postService.createPost(postRequest, subRedditName);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPostGlobal(@RequestBody PostDto postDto) {
-        postService.createPost(postDto, null);
+    public ResponseEntity<?> createPostGlobal(@RequestBody PostRequest postRequest) {
+        postService.createPost(postRequest, null);
         return ResponseEntity.ok().build();
     }
 

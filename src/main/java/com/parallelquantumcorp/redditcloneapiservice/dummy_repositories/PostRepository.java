@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import org.springframework.stereotype.Component;
 

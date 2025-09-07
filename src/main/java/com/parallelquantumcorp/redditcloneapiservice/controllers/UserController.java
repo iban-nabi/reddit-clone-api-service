@@ -1,8 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +19,16 @@ public class UserController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
-        UserDto user = userService.getUser(username);
+        UserResponse user = userService.getUser(username);
         if (user == null){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/search/{username}")
+    @GetMapping("/search/{query}")
     public ResponseEntity<?> searchUsers(@PathVariable String query) {
-        List<UserDto> users = userService.searchUsers(query);
+        List<UserResponse> users = userService.searchUsers(query);
         return ResponseEntity.ok(users);
     }
     

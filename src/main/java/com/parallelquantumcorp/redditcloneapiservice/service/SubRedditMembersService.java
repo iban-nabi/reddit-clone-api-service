@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditMembersRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubRedditMembers;
@@ -19,7 +19,7 @@ public class SubRedditMembersService {
 
     private final UserMapper userMapper;
 
-    public List<UserDto> getMembers(String subRedditName){
+    public List<UserResponse> getMembers(String subRedditName){
         SubRedditMembers subRedditMembers = subRedditMembersRepository
                 .getSubRedditMembers(subRedditName);
 
@@ -30,18 +30,21 @@ public class SubRedditMembersService {
                 .toList();
     }
 
-    public boolean joinSubReddit(String subRedditName, UserDto userDto){
-        User user = userRepository.findByUsername(userDto.getUsername());
-        if(user!=null){
+    public boolean joinSubReddit(String subRedditName, UserResponse userResponse){
+        User user = userRepository.findByUsername(userResponse.getUsername());
+        if(user!=null
+                && subRedditMembersRepository.subRedditExists(subRedditName)
+                && subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
             subRedditMembersRepository.addMember(subRedditName, user);
             return true;
         }
         return false;
     }
 
-    public boolean leaveSubReddit(String subRedditName, UserDto userDto){
-        User user = userRepository.findByUsername(userDto.getUsername());
-        if(user!=null){
+    public boolean leaveSubReddit(String subRedditName, UserResponse userResponse){
+        User user = userRepository.findByUsername(userResponse.getUsername());
+        if(user!=null && subRedditMembersRepository.subRedditExists(subRedditName)
+                && subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
             subRedditMembersRepository.removeMember(subRedditName, user);
             return true;
         }

@@ -1,7 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentDto;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
@@ -40,16 +41,16 @@ public class CommentService {
         return commentMapper.toDto(comment);
     }
 
-    public boolean createComment(CommentDto commentDto) {
-        Post post = postRepository.getPost(commentDto.getPost().getId());
+    public boolean createComment(Long postId, CommentRequest commentRequest) {
+        Post post = postRepository.getPost(postId);
 
         if(post != null){
-            Comment parent = (commentDto.getParent()!=null) ?
-                    commentRepository.getComment(commentDto.getParent().getId()) : null;
+            Comment parent = (commentRequest.getParent()!=null) ?
+                    commentRepository.getComment(commentRequest.getParent().getId()) : null;
 
             Comment comment = Comment.builder()
                     .post(post)
-                    .content(commentDto.getContent())
+                    .content(commentRequest.getContent())
                     .parent(parent)
                     .createdAt(LocalDateTime.now())
                     .upvotes(0)

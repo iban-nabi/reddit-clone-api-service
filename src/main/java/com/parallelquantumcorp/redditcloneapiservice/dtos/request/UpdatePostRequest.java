@@ -1,4 +1,4 @@
-package com.parallelquantumcorp.redditcloneapiservice.dtos;
+package com.parallelquantumcorp.redditcloneapiservice.dtos.request;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.CommentUpdateRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

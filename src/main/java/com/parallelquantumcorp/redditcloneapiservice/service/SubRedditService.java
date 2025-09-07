@@ -1,7 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.SubRedditDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdateSubRedditRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.SubRedditResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.SubRedditRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdateSubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditMembersRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
@@ -24,34 +25,34 @@ public class SubRedditService {
     private final SubRedditMapper subRedditMapper;
     private final UserRepository userRepository;
 
-    public List<SubRedditDto> getAllSubReddits(){
+    public List<SubRedditResponse> getAllSubReddits(){
         return subRedditRepository.getSubReddits()
                 .stream()
                 .map(subRedditMapper::toDto)
                 .toList();
     }
 
-    public List<SubRedditDto> searchSubReddits(String query){
+    public List<SubRedditResponse> searchSubReddits(String query){
         return subRedditRepository.searchSubReddit(query)
                 .stream()
                 .map(subRedditMapper::toDto)
                 .toList();
     }
 
-    public boolean createSubReddit(SubRedditDto subRedditDto){
-        if(subRedditRepository.existsByName(subRedditDto.getName())){
+    public boolean createSubReddit(SubRedditRequest subRedditRequest){
+        if(subRedditRepository.existsByName(subRedditRequest.getName())){
             return false;
         }
 
-        User user = userRepository.findByUsername(subRedditDto.getCreator().getUsername());
+        User user = userRepository.findByUsername(subRedditRequest.getCreator().getUsername());
 
         if(user==null){
             return false;
         }
 
         SubReddit subReddit = SubReddit.builder()
-                .name(subRedditDto.getName())
-                .description(subRedditDto.getDescription())
+                .name(subRedditRequest.getName())
+                .description(subRedditRequest.getDescription())
                 .archived(false)
                 .build();
 

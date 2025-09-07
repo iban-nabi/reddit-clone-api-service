@@ -1,7 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.PostDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdatePostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.PostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
@@ -9,10 +10,8 @@ import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.PostMapper;
-import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,21 +27,21 @@ public class PostService {
     //mappers
     private final PostMapper postMapper;
 
-    public List<PostDto> getAllPosts() {
+    public List<PostResponse> getAllPosts() {
         return postRepository.getAll()
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
     }
 
-    public List<PostDto> getAllSubRedditPosts(String subRedditName) {
+    public List<PostResponse> getAllSubRedditPosts(String subRedditName) {
         return postRepository.getAllSubRedditPosts(subRedditName)
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
     }
 
-    public PostDto getPostById(Long id){
+    public PostResponse getPostById(Long id){
         Post post = postRepository.getPost(id);
         if(post==null){
             return null;
@@ -50,16 +49,16 @@ public class PostService {
         return postMapper.toDto(post);
     }
 
-    public List<PostDto> searchPost(String query){
+    public List<PostResponse> searchPost(String query){
         return postRepository.searchPost(query)
                 .stream()
                 .map(postMapper::toDto)
                 .toList();
     }
 
-    public void createPost(PostDto postResponse, String subRedditName) {
+    public void createPost(PostRequest postRequest, String subRedditName) {
         SubReddit subReddit;
-        User user = userRepository.findByUsername(postResponse.getUser().getUsername());
+        User user = userRepository.findByUsername(postRequest.getUser().getUsername());
 
         if(subRedditName == null){
             subReddit = null;
@@ -68,9 +67,9 @@ public class PostService {
         }
 
         Post post = Post.builder()
-                .title(postResponse.getTitle())
-                .content(postResponse.getContent())
-                .tag(postResponse.getTag())
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .tag(postRequest.getTag())
                 .subreddit(subReddit)
                 .upvotes(0)
                 .downvotes(0)

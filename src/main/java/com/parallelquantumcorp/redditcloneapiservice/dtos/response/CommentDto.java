@@ -1,7 +1,5 @@
-package com.parallelquantumcorp.redditcloneapiservice.dtos;
+package com.parallelquantumcorp.redditcloneapiservice.dtos.response;
 
-import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
-import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentDto {
     private Long id;
-    private PostDto post;
     private CommentDto parent;
     private String content;
-    private UserDto user;
+    private UserResponse user;
     private int upvotes;
     private int downvotes;
     private LocalDateTime createdAt;

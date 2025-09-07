@@ -1,4 +1,4 @@
-package com.parallelquantumcorp.redditcloneapiservice.dtos;
+package com.parallelquantumcorp.redditcloneapiservice.dtos.response;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserResponse {
+    private Long id;
     private String username;
     private LocalDate birthday;
 }

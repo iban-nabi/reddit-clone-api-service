@@ -1,8 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
@@ -20,11 +20,11 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    public UserDto getUser(String username){
+    public UserResponse getUser(String username){
         return userMapper.toDtoResponse(userRepository.findByUsername(username)) ;
     }
 
-    public List<UserDto> searchUsers(String query){
+    public List<UserResponse> searchUsers(String query){
         return userRepository.searchUsers(query)
                 .stream()
                 .map(userMapper::toDtoResponse)

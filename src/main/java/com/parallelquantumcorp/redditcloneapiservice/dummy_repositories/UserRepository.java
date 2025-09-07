@@ -1,8 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UserRequest;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.List;

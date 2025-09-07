@@ -1,7 +1,8 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.SubRedditDto;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.UpdateSubRedditRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.SubRedditResponse;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.SubRedditRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdateSubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.service.SubRedditService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +19,19 @@ public class SubRedditController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllSubReddits(){
-        List<SubRedditDto> subReddits = subRedditService.getAllSubReddits();
+        List<SubRedditResponse> subReddits = subRedditService.getAllSubReddits();
         return ResponseEntity.ok(subReddits);
     }
 
     @GetMapping("/{name}")
     public ResponseEntity<?> searchSubReddit(@PathVariable String query){
-        List<SubRedditDto> subReddits = subRedditService.searchSubReddits(query);
+        List<SubRedditResponse> subReddits = subRedditService.searchSubReddits(query);
         return ResponseEntity.ok(subReddits);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createSubReddit(@RequestBody SubRedditDto subRedditDto){
-        boolean success = subRedditService.createSubReddit(subRedditDto);
+    public ResponseEntity<?> createSubReddit(@RequestBody SubRedditRequest subRedditRequest){
+        boolean success = subRedditService.createSubReddit(subRedditRequest);
         if(!success){
             return ResponseEntity.badRequest().build();
         }

@@ -33,4 +33,12 @@ public class SubRedditMembersRepository {
     public void removeMember(String subRedditName, User user){
         subRedditMembersMap.get(subRedditName).getMembers().remove(user.getUsername());
     }
+
+    public boolean userIsMember(String subRedditName, String username){
+        return subRedditMembersMap.get(subRedditName).getMembers().containsKey(username);
+    }
+
+    public boolean subRedditExists(String subRedditName){
+        return subRedditMembersMap.containsKey(subRedditName);
+    }
 }
