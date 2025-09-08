@@ -55,4 +55,12 @@ public class PostRepository {
     public boolean existsById(Long id){
         return posts.containsKey(id);
     }
+
+    public void upvote(Long id) {
+        posts.get(id).upvote();
+    }
+
+    public void downvote(Long id) {
+        posts.get(id).downvote();
+    }
 }

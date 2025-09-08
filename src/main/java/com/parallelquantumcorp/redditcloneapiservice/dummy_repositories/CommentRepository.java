@@ -43,4 +43,12 @@ public class CommentRepository {
     public boolean existsById(Long id){
         return comments.containsKey(id);
     }
+
+    public void upvote(Long id) {
+        comments.get(id).upvote();
+    }
+
+    public void downvote(Long id) {
+        comments.get(id).downvote();
+    }
 }

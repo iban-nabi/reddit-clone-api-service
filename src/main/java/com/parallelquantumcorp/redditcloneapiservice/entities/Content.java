@@ -12,17 +12,16 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public abstract class Content {
     private User user;
-    private int upvotes;
-    private int downvotes;
+    private long karma;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean archived;
 
     public void upvote(){
-        upvotes++;
+        karma++;
     }
 
     public void downvote(){
-        downvotes++;
+        karma--;
     }
 }

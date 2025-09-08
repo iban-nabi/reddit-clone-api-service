@@ -60,4 +60,22 @@ public class CommentController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/upvote/{id}")
+    public ResponseEntity<?> upVoteComment(@PathVariable Long id){
+        boolean success = commentService.upvoteComment(id);
+        if(!success){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/downvote/{id}")
+    public ResponseEntity<?> downVoteComment(@PathVariable Long id){
+        boolean success = commentService.downVoteComment(id);
+        if(!success){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

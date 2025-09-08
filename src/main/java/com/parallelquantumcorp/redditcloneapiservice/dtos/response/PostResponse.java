@@ -14,8 +14,7 @@ public class PostResponse {
     private String content;
     private String tag;
     private String username;
-    private int upvotes;
-    private int downvotes;
+    private long karma;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

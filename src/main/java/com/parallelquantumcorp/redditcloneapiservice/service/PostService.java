@@ -79,8 +79,7 @@ public class PostService {
                 .content(postRequest.getContent())
                 .tag(postRequest.getTag())
                 .subReddit(subReddit)
-                .upvotes(0)
-                .downvotes(0)
+                .karma(0)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .archived(false)
@@ -102,6 +101,24 @@ public class PostService {
         if(postRepository.existsById(id)
                 && !postRepository.getPost(id).isArchived()){
             postRepository.delete(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean upvotePost(Long id){
+        if(postRepository.existsById(id)
+                && !postRepository.getPost(id).isArchived()){
+            postRepository.upvote(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean downVotePost(Long id){
+        if(postRepository.existsById(id)
+                && !postRepository.getPost(id).isArchived()){
+            postRepository.downvote(id);
             return true;
         }
         return false;

@@ -63,8 +63,7 @@ public class CommentService {
                     .user(user)
                     .parent(parent)
                     .createdAt(LocalDateTime.now())
-                    .upvotes(0)
-                    .downvotes(0)
+                    .karma(0)
                     .archived(false)
                     .build();
 
@@ -87,6 +86,24 @@ public class CommentService {
         if(commentRepository.existsById(id) &&
                 !commentRepository.getComment(id).isArchived()){
             commentRepository.delete(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean upvoteComment(Long id){
+        if(commentRepository.existsById(id)
+                && !commentRepository.getComment(id).isArchived()){
+            commentRepository.upvote(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean downVoteComment(Long id){
+        if(commentRepository.existsById(id)
+                && !commentRepository.getComment(id).isArchived()){
+            commentRepository.downvote(id);
             return true;
         }
         return false;

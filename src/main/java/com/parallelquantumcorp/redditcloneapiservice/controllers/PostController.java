@@ -76,4 +76,22 @@ public class PostController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/upvote/{id}")
+    public ResponseEntity<?> upVotePost(@PathVariable Long id){
+        boolean success = postService.upvotePost(id);
+        if(!success){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/downvote/{id}")
+    public ResponseEntity<?> downVotePost(@PathVariable Long id){
+        boolean success = postService.downVotePost(id);
+        if(!success){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

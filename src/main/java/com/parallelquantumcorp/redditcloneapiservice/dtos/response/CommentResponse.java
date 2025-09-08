@@ -12,8 +12,7 @@ public class CommentResponse {
     private CommentResponse parent;
     private String content;
     private String username;
-    private int upvotes;
-    private int downvotes;
+    private long karma;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
