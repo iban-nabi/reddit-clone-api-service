@@ -6,10 +6,12 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateR
 import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -32,7 +34,8 @@ public class CommentController {
             return ResponseEntity.ok(comment);
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -43,7 +46,8 @@ public class CommentController {
             return ResponseEntity.ok().build();
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -55,7 +59,8 @@ public class CommentController {
             return ResponseEntity.ok().build();
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -66,7 +71,8 @@ public class CommentController {
             return ResponseEntity.ok().build();
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -77,7 +83,8 @@ public class CommentController {
             return ResponseEntity.ok().build();
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -88,7 +95,8 @@ public class CommentController {
             return ResponseEntity.ok().build();
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 }

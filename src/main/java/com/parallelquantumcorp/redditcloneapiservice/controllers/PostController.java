@@ -7,10 +7,12 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequ
 import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.PostService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -38,7 +40,8 @@ public class PostController {
             return ResponseEntity.ok(post);
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -56,7 +59,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -68,7 +72,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -82,7 +87,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -94,7 +100,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -106,7 +113,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -118,7 +126,8 @@ public class PostController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }

@@ -1,10 +1,16 @@
 package com.parallelquantumcorp.redditcloneapiservice.dtos.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class ChangePasswordRequest {
-    private String password;
+    @NotBlank(message = "Old password is required")
+    private String oldPassword;
+
+    @NotBlank(message = "New password is required")
+    private String newPassword;
 }

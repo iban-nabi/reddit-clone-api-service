@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updatePassword(ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException {
+    public void updatePassword(ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException, AuthenticationException {
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);
 
@@ -68,7 +69,11 @@ public class UserService {
             throw new ResourceNotFoundException("Cannot update password for archived user");
         }
 
-        userRepository.updatePassword(username, passwordEncoder.encode(changePasswordRequest.getPassword()));
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new AuthenticationException("Old password does not match");
+        }
+
+        userRepository.updatePassword(username, passwordEncoder.encode(changePasswordRequest.getNewPassword()));
     }
 
     public void deleteUser() throws ResourceNotFoundException {

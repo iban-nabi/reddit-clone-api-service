@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sub-reddit/{subRedditName}")
@@ -27,7 +28,8 @@ public class SubRedditMembersController {
             return ResponseEntity.ok().build();
 
         }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -39,7 +41,8 @@ public class SubRedditMembersController {
             return ResponseEntity.ok().build();
 
         }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }

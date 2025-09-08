@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sub-reddit")
@@ -37,7 +38,8 @@ public class SubRedditController {
             return ResponseEntity.ok().build();
 
         }catch(IllegalStateException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -50,7 +52,8 @@ public class SubRedditController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -62,7 +65,8 @@ public class SubRedditController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }

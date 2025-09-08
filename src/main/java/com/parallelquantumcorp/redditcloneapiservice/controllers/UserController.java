@@ -1,16 +1,17 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
 import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -26,7 +27,9 @@ public class UserController {
             return ResponseEntity.ok(user);
 
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -43,7 +46,8 @@ public class UserController {
             return ResponseEntity.ok().build();
 
         }catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -53,8 +57,9 @@ public class UserController {
             userService.updatePassword(request);
             return ResponseEntity.ok().build();
 
-        }catch (ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
@@ -66,7 +71,8 @@ public class UserController {
             return ResponseEntity.ok().build();
 
         }catch (ResourceNotFoundException e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
 
         }
     }
