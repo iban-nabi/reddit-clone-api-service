@@ -4,6 +4,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequ
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -43,14 +44,13 @@ public class PostRepository {
         posts.put(post.getId(), post);
     }
 
-    public boolean update(Long id, UpdatePostRequest updatePostRequest){
+    public void update(Long id, UpdatePostRequest updatePostRequest){
         posts.get(id).setContent(updatePostRequest.getContent());
-        return true;
+        posts.get(id).setUpdatedAt(LocalDateTime.now());
     }
 
-    public boolean delete(Long id){
+    public void delete(Long id){
         posts.get(id).setArchived(true);
-        return true;
     }
 
     public boolean existsById(Long id){

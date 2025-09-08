@@ -5,6 +5,7 @@ import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +35,11 @@ public class CommentRepository {
 
     public void update(Long id, CommentUpdateRequest comment){
         comments.get(id).setContent(comment.getContent());
+        comments.get(id).setUpdatedAt(LocalDateTime.now());
     }
 
     public void delete(Long commentId){
         comments.get(commentId).setArchived(true);
-    }
-
-    public boolean existsById(Long id){
-        return comments.containsKey(id);
     }
 
     public void upvote(Long id) {

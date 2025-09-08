@@ -1,6 +1,5 @@
 package com.parallelquantumcorp.redditcloneapiservice.dummy_repositories;
 
-import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
@@ -28,14 +27,10 @@ public class UserRepository {
                 .toList();
     }
 
-    public boolean save(User user){
-        if(!users.containsKey(user.getUsername())){
-            Long id = users.size()+1L;
-            user.setId(id);
-            users.put(user.getUsername(), user);
-            return true;
-        }
-        return false;
+    public void save(User user){
+        Long id = users.size()+1L;
+        user.setId(id);
+        users.put(user.getUsername(), user);
     }
 
     public void updatePassword(String username, String password){
