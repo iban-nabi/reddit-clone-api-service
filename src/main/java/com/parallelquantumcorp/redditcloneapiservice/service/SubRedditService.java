@@ -9,6 +9,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubReddi
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.SubRedditMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,17 +46,13 @@ public class SubRedditService {
                 .toList();
     }
 
-    public boolean createSubReddit(SubRedditRequest subRedditRequest){
-        if(subRedditRepository.existsByName(subRedditRequest.getName())){
-            return false;
+    public void createSubReddit(SubRedditRequest subRedditRequest) throws IllegalStateException {
+        if (subRedditRepository.existsByName(subRedditRequest.getName())) {
+            throw new IllegalStateException("Subreddit '" + subRedditRequest.getName() + "' already exists");
         }
 
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);
-
-        if(user==null || user.isArchived()){
-            return false;
-        }
 
         SubReddit subReddit = SubReddit.builder()
                 .name(subRedditRequest.getName())
@@ -66,24 +63,34 @@ public class SubRedditService {
         subRedditRepository.save(subReddit);
         subRedditMembersRepository.createSubRedditMembers(subReddit);
         subRedditMembersRepository.addMember(subReddit.getName(), user);
-        return true;
     }
 
-    public boolean updateSubReddit(String name, UpdateSubRedditRequest updateSubRedditRequest){
-        if(subRedditRepository.existsByName(name)
-                && !subRedditRepository.getSubReddit(name).isArchived()){
-            subRedditRepository.update(name, updateSubRedditRequest);
-            return true;
+    public void updateSubReddit(String name, UpdateSubRedditRequest updateSubRedditRequest)
+            throws ResourceNotFoundException {
+        SubReddit subReddit = subRedditRepository.getSubReddit(name);
+
+        if (subReddit == null) {
+            throw new ResourceNotFoundException("Subreddit '" + name + "' not found");
         }
-        return false;
+
+        if (subReddit.isArchived()) {
+            throw new ResourceNotFoundException("Cannot update archived subreddit");
+        }
+
+        subRedditRepository.update(name, updateSubRedditRequest);
     }
 
-    public boolean deleteSubReddit(String name){
-        if(subRedditRepository.existsByName(name)
-                && !subRedditRepository.getSubReddit(name).isArchived()){
-            subRedditRepository.delete(name);
-            return true;
+    public void deleteSubReddit(String name) throws ResourceNotFoundException {
+        SubReddit subReddit = subRedditRepository.getSubReddit(name);
+
+        if (subReddit == null) {
+            throw new ResourceNotFoundException("Subreddit '" + name + "' not found");
         }
-        return false;
+
+        if (subReddit.isArchived()) {
+            throw new ResourceNotFoundException("Cannot delete archived subreddit");
+        }
+
+        subRedditRepository.delete(name);
     }
 }

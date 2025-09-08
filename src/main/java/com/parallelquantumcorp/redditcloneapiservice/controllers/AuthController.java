@@ -38,6 +38,7 @@ public class AuthController {
             User user = userRepository.findByUsername(auth.getName());
             Jwt token = jwtService.generateAccessToken(user);
             return ResponseEntity.ok(token.toString());
+
         }catch(BadCredentialsException e){
             return ResponseEntity.badRequest().build();
         }

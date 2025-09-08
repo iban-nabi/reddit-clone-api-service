@@ -38,8 +38,8 @@ public class UserRepository {
         return false;
     }
 
-    public void updatePassword(String username, ChangePasswordRequest request){
-        users.get(username).setPassword(request.getPassword());
+    public void updatePassword(String username, String password){
+        users.get(username).setPassword(password);
     }
 
     public void delete(String username){

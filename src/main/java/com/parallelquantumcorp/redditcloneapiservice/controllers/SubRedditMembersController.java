@@ -22,19 +22,25 @@ public class SubRedditMembersController {
 
     @PostMapping("/join")
     public ResponseEntity<?> joinSubReddit(@PathVariable String subRedditName){
-        boolean success = subRedditMembersService.joinSubReddit(subRedditName);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            subRedditMembersService.joinSubReddit(subRedditName);
+            return ResponseEntity.ok().build();
+
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/leave")
     public ResponseEntity<?> leave(@PathVariable String subRedditName){
-        boolean success = subRedditMembersService.leaveSubReddit(subRedditName);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            subRedditMembersService.leaveSubReddit(subRedditName);
+            return ResponseEntity.ok().build();
+
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 }

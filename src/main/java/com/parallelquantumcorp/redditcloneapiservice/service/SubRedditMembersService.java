@@ -6,6 +6,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubReddi
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubRedditMembers;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,27 +38,41 @@ public class SubRedditMembersService {
                 .toList();
     }
 
-    public boolean joinSubReddit(String subRedditName){
+    public void joinSubReddit(String subRedditName) throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);
-        if(user!=null && !user.isArchived()
-                && subRedditMembersRepository.subRedditExists(subRedditName)
-                && !subRedditMembersRepository.userIsMember(subRedditName, username)){
-            subRedditMembersRepository.addMember(subRedditName, user);
-            return true;
+
+        if (user.isArchived()) {
+            throw new IllegalStateException("Archived users cannot join subreddits");
         }
-        return false;
+
+        if (!subRedditMembersRepository.subRedditExists(subRedditName)) {
+            throw new ResourceNotFoundException("Subreddit '" + subRedditName + "' not found");
+        }
+
+        if (subRedditMembersRepository.userIsMember(subRedditName, username)) {
+            throw new IllegalStateException("User is already a member of subreddit '" + subRedditName + "'");
+        }
+
+        subRedditMembersRepository.addMember(subRedditName, user);
     }
 
-    public boolean leaveSubReddit(String subRedditName){
+    public void leaveSubReddit(String subRedditName) throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);
-        if(user!=null && !user.isArchived()
-                && subRedditMembersRepository.subRedditExists(subRedditName)
-                && subRedditMembersRepository.userIsMember(subRedditName, username)){
-            subRedditMembersRepository.removeMember(subRedditName, user);
-            return true;
+
+        if (user.isArchived()) {
+            throw new IllegalStateException("Archived users cannot leave subreddits");
         }
-        return false;
+
+        if (!subRedditMembersRepository.subRedditExists(subRedditName)) {
+            throw new ResourceNotFoundException("Subreddit '" + subRedditName + "' not found");
+        }
+
+        if (!subRedditMembersRepository.userIsMember(subRedditName, username)) {
+            throw new IllegalStateException("User is not a member of subreddit '" + subRedditName + "'");
+        }
+
+        subRedditMembersRepository.removeMember(subRedditName, user);
     }
 }

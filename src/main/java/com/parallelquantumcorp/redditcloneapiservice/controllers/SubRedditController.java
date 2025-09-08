@@ -3,6 +3,7 @@ package com.parallelquantumcorp.redditcloneapiservice.controllers;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.SubRedditResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.SubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdateSubRedditRequest;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.SubRedditService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,29 +32,38 @@ public class SubRedditController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createSubReddit(@RequestBody SubRedditRequest subRedditRequest){
-        boolean success = subRedditService.createSubReddit(subRedditRequest);
-        if(!success){
+        try{
+            subRedditService.createSubReddit(subRedditRequest);
+            return ResponseEntity.ok().build();
+
+        }catch(IllegalStateException e){
             return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/update/{name}")
     public ResponseEntity<?> updateSubReddit(@PathVariable String name,
                                              @RequestBody UpdateSubRedditRequest updateSubRedditRequest){
-        boolean success = subRedditService.updateSubReddit(name, updateSubRedditRequest);
-        if(!success){
-            return ResponseEntity.noContent().build();
+        try{
+            subRedditService.updateSubReddit(name, updateSubRedditRequest);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/delete/{name}")
     public ResponseEntity<?> deleteSubReddit(@PathVariable String name){
-        boolean success = subRedditService.deleteSubReddit(name);
-        if(!success){
-            return ResponseEntity.noContent().build();
+        try{
+            subRedditService.deleteSubReddit(name);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 }

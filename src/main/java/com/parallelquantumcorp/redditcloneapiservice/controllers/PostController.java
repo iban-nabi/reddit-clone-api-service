@@ -1,8 +1,10 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.PostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequest;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +33,13 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        PostResponse post = postService.getPostById(id) ;
-        if(post==null){
+        try {
+            PostResponse post = postService.getPostById(id) ;
+            return ResponseEntity.ok(post);
+
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/search/{query}")
@@ -47,51 +51,75 @@ public class PostController {
     @PostMapping("/{subRedditName}/create")
     public ResponseEntity<?> createPostInSubReddit(@PathVariable String subRedditName,
                                                    @RequestBody PostRequest postRequest) {
-        postService.createPost(postRequest, subRedditName);
-        return ResponseEntity.ok().build();
+        try{
+            postService.createPost(postRequest, subRedditName);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
+        }
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createPostGlobal(@RequestBody PostRequest postRequest) {
-        postService.createPost(postRequest, null);
-        return ResponseEntity.ok().build();
+        try{
+            postService.createPost(postRequest, null);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
+        }
     }
 
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id,
                                         @RequestBody UpdatePostRequest updatePostRequest) {
-        boolean success = postService.updatePost(id, updatePostRequest);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            postService.updatePost(id, updatePostRequest);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        boolean  success = postService.deletePost(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            postService.deletePost(id);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/upvote/{id}")
     public ResponseEntity<?> upVotePost(@PathVariable Long id){
-        boolean success = postService.upvotePost(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            postService.upvotePost(id);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/downvote/{id}")
     public ResponseEntity<?> downVotePost(@PathVariable Long id){
-        boolean success = postService.downVotePost(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try{
+            postService.downvotePost(id);
+            return ResponseEntity.ok().build();
+
+        }catch(ResourceNotFoundException e){
+            return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 }

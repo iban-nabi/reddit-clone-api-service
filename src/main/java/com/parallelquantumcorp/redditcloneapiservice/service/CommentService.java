@@ -10,6 +10,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepo
 import com.parallelquantumcorp.redditcloneapiservice.entities.Comment;
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,71 +42,95 @@ public class CommentService {
                 .toList();
     }
 
-    public CommentResponse getComment(Long commentId){
+    public CommentResponse getComment(Long commentId) throws ResourceNotFoundException{
         Comment comment = commentRepository.getComment(commentId);
         if(comment == null || comment.isArchived()){
-            return null;
+            throw new ResourceNotFoundException("Comment does not exist");
         }
         return commentMapper.toDto(comment);
     }
 
-    public boolean createComment(Long postId, CommentRequest commentRequest) {
+    public void createComment(Long postId, CommentRequest commentRequest) throws ResourceNotFoundException {
         Post post = postRepository.getPost(postId);
         User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
 
-        if(post != null){
-            Comment parent = (commentRequest.getParentCommentId()!=null) ?
-                    commentRepository.getComment(commentRequest.getParentCommentId()) : null;
+        if (post==null)
+            throw new ResourceNotFoundException("Post Id " + postId + " does not exist");
 
-            Comment comment = Comment.builder()
-                    .post(post)
-                    .content(commentRequest.getContent())
-                    .user(user)
-                    .parent(parent)
-                    .createdAt(LocalDateTime.now())
-                    .karma(0)
-                    .archived(false)
-                    .build();
+        Comment parent = (commentRequest.getParentCommentId()!=null) ?
+                commentRepository.getComment(commentRequest.getParentCommentId()) : null;
 
-            commentRepository.save(comment);
-            return true;
+        if(commentRequest.getParentCommentId()!=null && parent == null) {
+            throw new ResourceNotFoundException("Parent Comment Id " + commentRequest.getParentCommentId()
+                    + " does not exist");
         }
-        return false;
+
+        Comment comment = Comment.builder()
+                .post(post)
+                .content(commentRequest.getContent())
+                .user(user)
+                .parent(parent)
+                .createdAt(LocalDateTime.now())
+                .karma(0)
+                .archived(false)
+                .build();
+
+        commentRepository.save(comment);
     }
 
-    public boolean updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
-        if(commentRepository.existsById(id) &&
-                !commentRepository.getComment(id).isArchived()){
-            commentRepository.update(id, commentUpdateRequest);
-            return true;
+    public void updateComment(Long id, CommentUpdateRequest commentUpdateRequest) throws ResourceNotFoundException{
+        Comment comment = commentRepository.getComment(id);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException("Comment with ID " + id + " not found");
         }
-        return false;
+
+        if (comment.isArchived()) {
+            throw new ResourceNotFoundException("Cannot update archived comment");
+        }
+
+        commentRepository.update(id, commentUpdateRequest);
     }
 
-    public boolean deleteComment(Long id) {
-        if(commentRepository.existsById(id) &&
-                !commentRepository.getComment(id).isArchived()){
-            commentRepository.delete(id);
-            return true;
+    public void deleteComment(Long id) throws ResourceNotFoundException {
+        Comment comment = commentRepository.getComment(id);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException("Comment with ID " + id + " not found");
         }
-        return false;
+
+        if (comment.isArchived()) {
+            throw new ResourceNotFoundException("Cannot delete archived comment");
+        }
+
+        commentRepository.delete(id);
     }
 
-    public boolean upvoteComment(Long id){
-        if(commentRepository.existsById(id)
-                && !commentRepository.getComment(id).isArchived()){
-            commentRepository.upvote(id);
-            return true;
+    public void upvoteComment(Long id) throws ResourceNotFoundException {
+        Comment comment = commentRepository.getComment(id);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException("Comment with ID " + id + " not found");
         }
-        return false;
+
+        if (comment.isArchived()) {
+            throw new ResourceNotFoundException("Cannot upvote archived comment");
+        }
+
+        commentRepository.upvote(id);
     }
 
-    public boolean downVoteComment(Long id){
-        if(commentRepository.existsById(id)
-                && !commentRepository.getComment(id).isArchived()){
-            commentRepository.downvote(id);
-            return true;
+    public void downvoteComment(Long id) throws ResourceNotFoundException {
+        Comment comment = commentRepository.getComment(id);
+
+        if (comment == null) {
+            throw new ResourceNotFoundException("Comment with ID " + id + " not found");
         }
-        return false;
+
+        if (comment.isArchived()) {
+            throw new ResourceNotFoundException("Cannot downvote archived comment");
+        }
+
+        commentRepository.downvote(id);
     }
 }

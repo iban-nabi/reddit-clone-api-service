@@ -1,8 +1,10 @@
 package com.parallelquantumcorp.redditcloneapiservice.controllers;
 
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,13 @@ public class UserController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
-        UserResponse user = userService.getUser(username);
-        if (user == null){
+        try {
+            UserResponse user = userService.getUser(username);
+            return ResponseEntity.ok(user);
+
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/search/{query}")
@@ -34,29 +38,36 @@ public class UserController {
     
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
-        boolean success = userService.createUser(userRequest);
-        if(!success){
+        try{
+            userService.createUser(userRequest);
+            return ResponseEntity.ok().build();
+
+        }catch (IllegalStateException e){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
-    // to include encryption later on
     @PatchMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request){
-        boolean success = userService.updatePassword(request);
-        if(!success){
+        try{
+            userService.updatePassword(request);
+            return ResponseEntity.ok().build();
+
+        }catch (ResourceNotFoundException e){
             return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/delete")
     public ResponseEntity<?> deleteUser(){
-        boolean success = userService.deleteUser();
-        if(!success){
+        try{
+            userService.deleteUser();
+            return ResponseEntity.ok().build();
+
+        }catch (ResourceNotFoundException e){
             return ResponseEntity.badRequest().build();
+
         }
-        return ResponseEntity.ok().build();
     }
 }

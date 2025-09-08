@@ -10,6 +10,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepo
 import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import com.parallelquantumcorp.redditcloneapiservice.entities.SubReddit;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.PostMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,10 +48,10 @@ public class PostService {
                 .toList();
     }
 
-    public PostResponse getPostById(Long id){
+    public PostResponse getPostById(Long id) throws ResourceNotFoundException{
         Post post = postRepository.getPost(id);
         if(post==null || post.isArchived()){
-            return null;
+            throw new ResourceNotFoundException("Post does not exist");
         }
         return postMapper.toDto(post);
     }
@@ -63,15 +64,17 @@ public class PostService {
                 .toList();
     }
 
-    public void createPost(PostRequest postRequest, String subRedditName) {
+    public void createPost(PostRequest postRequest, String subRedditName) throws ResourceNotFoundException{
         SubReddit subReddit;
-        // add check user
         User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
 
         if(subRedditName == null){
             subReddit = null;
+
         }else{
             subReddit = subRedditRepository.getSubReddit(subRedditName);
+            if (subReddit==null || subReddit.isArchived())
+                throw new ResourceNotFoundException("Sub Reddit "+subRedditName+ "is archived");
         }
 
         Post post = Post.builder()
@@ -88,39 +91,59 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public boolean updatePost(Long id, UpdatePostRequest updatePostRequest){
-        if(postRepository.existsById(id)
-                && !postRepository.getPost(id).isArchived()){
-            postRepository.update(id, updatePostRequest);
-            return true;
+    public void updatePost(Long id, UpdatePostRequest updatePostRequest) throws ResourceNotFoundException {
+        Post post = postRepository.getPost(id);
+
+        if (post == null) {
+            throw new ResourceNotFoundException("Post with ID " + id + " not found");
         }
-        return false;
+
+        if (post.isArchived()) {
+            throw new ResourceNotFoundException("Cannot update archived post");
+        }
+
+        postRepository.update(id, updatePostRequest);
     }
 
-    public boolean deletePost(Long id){
-        if(postRepository.existsById(id)
-                && !postRepository.getPost(id).isArchived()){
-            postRepository.delete(id);
-            return true;
+    public void deletePost(Long id) throws ResourceNotFoundException {
+        Post post = postRepository.getPost(id);
+
+        if (post == null) {
+            throw new ResourceNotFoundException("Post with ID " + id + " not found");
         }
-        return false;
+
+        if (post.isArchived()) {
+            throw new ResourceNotFoundException("Cannot delete archived post");
+        }
+
+        postRepository.delete(id);
     }
 
-    public boolean upvotePost(Long id){
-        if(postRepository.existsById(id)
-                && !postRepository.getPost(id).isArchived()){
-            postRepository.upvote(id);
-            return true;
+    public void upvotePost(Long id) throws ResourceNotFoundException {
+        Post post = postRepository.getPost(id);
+
+        if (post == null) {
+            throw new ResourceNotFoundException("Post with ID " + id + " not found");
         }
-        return false;
+
+        if (post.isArchived()) {
+            throw new ResourceNotFoundException("Cannot upvote archived post");
+        }
+
+        postRepository.upvote(id);
     }
 
-    public boolean downVotePost(Long id){
-        if(postRepository.existsById(id)
-                && !postRepository.getPost(id).isArchived()){
-            postRepository.downvote(id);
-            return true;
+    public void downvotePost(Long id) throws ResourceNotFoundException {
+        Post post = postRepository.getPost(id);
+
+        if (post == null) {
+            throw new ResourceNotFoundException("Post with ID " + id + " not found");
         }
-        return false;
+
+        if (post.isArchived()) {
+            throw new ResourceNotFoundException("Cannot downvote archived post");
+        }
+
+        postRepository.downvote(id);
     }
 }

@@ -6,6 +6,7 @@ import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -26,8 +27,14 @@ public class UserService {
 
     private final AuthenticationContextHelper contextHelper;
 
-    public UserResponse getUser(String username){
-        return userMapper.toDtoResponse(userRepository.findByUsername(username)) ;
+    public UserResponse getUser(String username) throws ResourceNotFoundException{
+        User user = userRepository.findByUsername(username);
+
+        if(user==null || user.isArchived()){
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        return userMapper.toDtoResponse(user) ;
     }
 
     public List<UserResponse> searchUsers(String query){
@@ -38,9 +45,9 @@ public class UserService {
                 .toList();
     }
 
-    public boolean createUser(UserRequest userRequest) {
-        if(userRepository.existByUsername(userRequest.getUsername())){
-            return false;
+    public void createUser(UserRequest userRequest) throws IllegalStateException {
+        if (userRepository.existByUsername(userRequest.getUsername())) {
+            throw new IllegalStateException("Username '" + userRequest.getUsername() + "' already exists");
         }
 
         User user = User.builder()
@@ -51,26 +58,27 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
-        return true;
     }
 
-    public boolean updatePassword(ChangePasswordRequest changePasswordRequest) {
+    public void updatePassword(ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
-        if(userRepository.existByUsername(username) &&
-            !userRepository.findByUsername(username).isArchived()){
-            userRepository.updatePassword(username, changePasswordRequest);
-            return true;
+        User user = userRepository.findByUsername(username);
+
+        if (user.isArchived()) {
+            throw new ResourceNotFoundException("Cannot update password for archived user");
         }
-        return false;
+
+        userRepository.updatePassword(username, passwordEncoder.encode(changePasswordRequest.getPassword()));
     }
 
-    public boolean deleteUser() {
+    public void deleteUser() throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
-        if(userRepository.existByUsername(username)&&
-                !userRepository.findByUsername(username).isArchived()){
-            userRepository.delete(username);
-            return true;
+        User user = userRepository.findByUsername(username);
+
+        if (user.isArchived()) {
+            throw new ResourceNotFoundException("Cannot delete archived user");
         }
-        return false;
+
+        userRepository.delete(username);
     }
 }

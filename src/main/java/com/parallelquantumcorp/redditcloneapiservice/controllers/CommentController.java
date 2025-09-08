@@ -3,6 +3,7 @@ package com.parallelquantumcorp.redditcloneapiservice.controllers;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
+import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,56 +27,68 @@ public class CommentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getComment(@PathVariable Long id) {
-        CommentResponse comment = commentService.getComment(id);
-        if (comment == null) {
+        try {
+            CommentResponse comment = commentService.getComment(id);
+            return ResponseEntity.ok(comment);
+
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(comment);
     }
 
     @PostMapping("/{postId}/create")
     public ResponseEntity<?> createComment(@PathVariable Long postId, @RequestBody CommentRequest commentRequest) {
-        boolean success = commentService.createComment(postId, commentRequest);
-        if (!success){
+        try {
+            commentService.createComment(postId, commentRequest);
+            return ResponseEntity.ok().build();
+
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateComment(@PathVariable Long id,
                                            @RequestBody CommentUpdateRequest commentUpdateRequest) {
-        boolean success = commentService.updateComment(id, commentUpdateRequest);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try {
+            commentService.updateComment(id, commentUpdateRequest);
+            return ResponseEntity.ok().build();
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/delete/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
-        boolean success = commentService.deleteComment(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try {
+            commentService.deleteComment(id);
+            return ResponseEntity.ok().build();
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/upvote/{id}")
     public ResponseEntity<?> upVoteComment(@PathVariable Long id){
-        boolean success = commentService.upvoteComment(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try {
+            commentService.upvoteComment(id);
+            return ResponseEntity.ok().build();
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/downvote/{id}")
     public ResponseEntity<?> downVoteComment(@PathVariable Long id){
-        boolean success = commentService.downVoteComment(id);
-        if(!success){
-            return ResponseEntity.notFound().build();
+        try {
+            commentService.downvoteComment(id);
+            return ResponseEntity.ok().build();
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 }
