@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponse {
     private Long id;
-    private CommentResponse parent;
+    private Long parentCommentId;
     private String content;
     private String username;
     private long karma;

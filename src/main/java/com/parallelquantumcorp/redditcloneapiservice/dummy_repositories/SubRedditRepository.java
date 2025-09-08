@@ -36,17 +36,12 @@ public class SubRedditRepository {
         subReddits.put(subReddit.getName(), subReddit);
     }
 
-    public boolean update(String name, UpdateSubRedditRequest updateSubRedditRequest) {
+    public void update(String name, UpdateSubRedditRequest updateSubRedditRequest) {
         subReddits.get(name).setDescription(updateSubRedditRequest.getDescription());
-        return true;
     }
 
-    public boolean delete(String name) {
-        if(!subReddits.containsKey(name)) {
-            return false;
-        }
+    public void delete(String name) {
         subReddits.get(name).setArchived(true);
-        return true;
     }
 
     public boolean existsByName(String name) {

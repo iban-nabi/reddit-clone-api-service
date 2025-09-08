@@ -22,7 +22,7 @@ public class PostRepository {
         return posts.values()
                 .stream()
                 .filter(post -> post.getTitle().toLowerCase().contains(query.toLowerCase())
-                        && post.getContent().toLowerCase().contains(query.toLowerCase())
+                        || post.getContent().toLowerCase().contains(query.toLowerCase())
                         && !post.getUser().isArchived())
                 .toList();
 
@@ -31,6 +31,7 @@ public class PostRepository {
     public List<Post> getAllSubRedditPosts(String subRedditName){
         return posts.values()
                 .stream()
+                .filter(post -> post.getSubReddit() != null)
                 .filter(post -> Objects.equals(post.getSubReddit().getName(), subRedditName)
                         && !post.getSubReddit().isArchived()
                         && !post.isArchived())

@@ -52,6 +52,7 @@ public class SubRedditController {
             return ResponseEntity.ok().build();
 
         }catch(ResourceNotFoundException e){
+            System.out.println("sadly i am here");
             return ResponseEntity.badRequest()
                     .body(Map.of("message", e.getMessage()));
 

@@ -60,7 +60,6 @@ public class UserController {
         }catch (Exception e){
             return ResponseEntity.badRequest()
                     .body(Map.of("message", e.getMessage()));
-
         }
     }
 
@@ -73,7 +72,6 @@ public class UserController {
         }catch (ResourceNotFoundException e){
             return ResponseEntity.badRequest()
                     .body(Map.of("message", e.getMessage()));
-
         }
     }
 }

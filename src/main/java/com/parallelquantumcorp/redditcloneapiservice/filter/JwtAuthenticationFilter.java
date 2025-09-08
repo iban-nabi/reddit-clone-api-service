@@ -1,6 +1,7 @@
 package com.parallelquantumcorp.redditcloneapiservice.filter;
 
 import com.parallelquantumcorp.redditcloneapiservice.auth.Jwt;
+import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
 import com.parallelquantumcorp.redditcloneapiservice.service.JwtService;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.servlet.FilterChain;
@@ -19,6 +20,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -40,6 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String username = jwt.getSubject();
+        if(userRepository.findByUsername(username)==null){
+            filterChain.doFilter(request,response);
+            return;
+        }
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());

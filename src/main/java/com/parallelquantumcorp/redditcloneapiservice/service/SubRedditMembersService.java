@@ -26,9 +26,13 @@ public class SubRedditMembersService {
     // helpers
     private final AuthenticationContextHelper contextHelper;
 
-    public List<UserResponse> getMembers(String subRedditName){
+    public List<UserResponse> getMembers(String subRedditName) throws ResourceNotFoundException {
         SubRedditMembers subRedditMembers = subRedditMembersRepository
                 .getSubRedditMembers(subRedditName);
+
+        if(subRedditMembers == null){
+            throw new ResourceNotFoundException("Sub Reddit does not exist");
+        }
 
         return subRedditMembers.getMembers()
                 .values()
