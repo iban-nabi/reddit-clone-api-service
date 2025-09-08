@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.PostResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.PostRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdatePostRequest;
@@ -26,6 +27,9 @@ public class PostService {
 
     //mappers
     private final PostMapper postMapper;
+
+    //helper
+    private final AuthenticationContextHelper contextHelper;
 
     public List<PostResponse> getAllPosts() {
         return postRepository.getAll()
@@ -62,7 +66,7 @@ public class PostService {
     public void createPost(PostRequest postRequest, String subRedditName) {
         SubReddit subReddit;
         // add check user
-        User user = userRepository.findByUsername(postRequest.getUser().getUsername());
+        User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
 
         if(subRedditName == null){
             subReddit = null;
@@ -74,7 +78,7 @@ public class PostService {
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .tag(postRequest.getTag())
-                .subreddit(subReddit)
+                .subReddit(subReddit)
                 .upvotes(0)
                 .downvotes(0)
                 .user(user)

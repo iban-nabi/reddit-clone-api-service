@@ -31,8 +31,8 @@ public class PostRepository {
     public List<Post> getAllSubRedditPosts(String subRedditName){
         return posts.values()
                 .stream()
-                .filter(post -> Objects.equals(post.getSubreddit().getName(), subRedditName)
-                        && post.getSubreddit().isArchived()
+                .filter(post -> Objects.equals(post.getSubReddit().getName(), subRedditName)
+                        && !post.getSubReddit().isArchived()
                         && !post.isArchived())
                 .toList();
     }

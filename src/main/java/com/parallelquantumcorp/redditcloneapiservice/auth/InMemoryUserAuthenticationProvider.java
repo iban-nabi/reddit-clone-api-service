@@ -25,7 +25,8 @@ public class InMemoryUserAuthenticationProvider implements AuthenticationProvide
         String password = authentication.getCredentials().toString();
 
         User user = userRepository.findByUsername(username);
-        if(user==null){
+
+        if(user==null || user.isArchived()){
             throw new BadCredentialsException("User not Found");
         }
 

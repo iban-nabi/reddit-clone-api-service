@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.ChangePasswordRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UserRequest;
@@ -7,6 +8,8 @@ import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepo
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.UserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,9 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     private final UserMapper userMapper;
+
+    private final AuthenticationContextHelper contextHelper;
 
     public UserResponse getUser(String username){
         return userMapper.toDtoResponse(userRepository.findByUsername(username)) ;
@@ -39,7 +45,7 @@ public class UserService {
 
         User user = User.builder()
                 .username(userRequest.getUsername())
-                .password(userRequest.getPassword())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
                 .birthday(LocalDate.now())
                 .archived(false)
                 .build();
@@ -48,8 +54,8 @@ public class UserService {
         return true;
     }
 
-    public boolean updatePassword(String username,
-                                  ChangePasswordRequest changePasswordRequest) {
+    public boolean updatePassword(ChangePasswordRequest changePasswordRequest) {
+        String username = contextHelper.getNameFromAuthToken();
         if(userRepository.existByUsername(username) &&
             !userRepository.findByUsername(username).isArchived()){
             userRepository.updatePassword(username, changePasswordRequest);
@@ -58,7 +64,8 @@ public class UserService {
         return false;
     }
 
-    public boolean deleteUser(String username) {
+    public boolean deleteUser() {
+        String username = contextHelper.getNameFromAuthToken();
         if(userRepository.existByUsername(username)&&
                 !userRepository.findByUsername(username).isArchived()){
             userRepository.delete(username);

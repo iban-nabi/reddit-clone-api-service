@@ -9,5 +9,4 @@ import lombok.Setter;
 public class SubRedditRequest {
     private String name;
     private String description;
-    private UserResponse creator;
 }

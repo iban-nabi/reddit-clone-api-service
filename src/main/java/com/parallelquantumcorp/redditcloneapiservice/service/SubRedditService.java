@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.SubRedditResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.SubRedditRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.UpdateSubRedditRequest;
@@ -25,6 +26,9 @@ public class SubRedditService {
     private final SubRedditMapper subRedditMapper;
     private final UserRepository userRepository;
 
+    //helpers
+    private final AuthenticationContextHelper contextHelper;
+
     public List<SubRedditResponse> getAllSubReddits(){
         return subRedditRepository.getSubReddits()
                 .stream()
@@ -46,7 +50,8 @@ public class SubRedditService {
             return false;
         }
 
-        User user = userRepository.findByUsername(subRedditRequest.getCreator().getUsername());
+        String username = contextHelper.getNameFromAuthToken();
+        User user = userRepository.findByUsername(username);
 
         if(user==null || user.isArchived()){
             return false;

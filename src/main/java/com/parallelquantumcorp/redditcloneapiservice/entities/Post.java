@@ -14,7 +14,7 @@ import java.util.Map;
 @SuperBuilder
 public class Post extends Content {
     private Long id;
-    private SubReddit subreddit;
+    private SubReddit subReddit;
     private String title;
     private String content;
     private String tag;

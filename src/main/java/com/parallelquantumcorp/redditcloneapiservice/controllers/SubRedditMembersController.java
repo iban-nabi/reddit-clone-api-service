@@ -21,8 +21,8 @@ public class SubRedditMembersController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> joinSubReddit(@PathVariable String subRedditName, @RequestBody UserResponse userResponse){
-        boolean success = subRedditMembersService.joinSubReddit(subRedditName, userResponse);
+    public ResponseEntity<?> joinSubReddit(@PathVariable String subRedditName){
+        boolean success = subRedditMembersService.joinSubReddit(subRedditName);
         if(!success){
             return ResponseEntity.notFound().build();
         }
@@ -30,8 +30,8 @@ public class SubRedditMembersController {
     }
 
     @PostMapping("/leave")
-    public ResponseEntity<?> leave(@PathVariable String subRedditName, @RequestBody UserResponse userResponse){
-        boolean success = subRedditMembersService.leaveSubReddit(subRedditName, userResponse);
+    public ResponseEntity<?> leave(@PathVariable String subRedditName){
+        boolean success = subRedditMembersService.leaveSubReddit(subRedditName);
         if(!success){
             return ResponseEntity.notFound().build();
         }

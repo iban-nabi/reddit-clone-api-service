@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.UserResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.SubRedditMembersRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
@@ -14,10 +15,15 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class SubRedditMembersService {
+    //repositories
     private final SubRedditMembersRepository subRedditMembersRepository;
     private final UserRepository userRepository;
 
+    //mappers
     private final UserMapper userMapper;
+
+    // helpers
+    private final AuthenticationContextHelper contextHelper;
 
     public List<UserResponse> getMembers(String subRedditName){
         SubRedditMembers subRedditMembers = subRedditMembersRepository
@@ -31,22 +37,24 @@ public class SubRedditMembersService {
                 .toList();
     }
 
-    public boolean joinSubReddit(String subRedditName, UserResponse userResponse){
-        User user = userRepository.findByUsername(userResponse.getUsername());
+    public boolean joinSubReddit(String subRedditName){
+        String username = contextHelper.getNameFromAuthToken();
+        User user = userRepository.findByUsername(username);
         if(user!=null && !user.isArchived()
                 && subRedditMembersRepository.subRedditExists(subRedditName)
-                && !subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
+                && !subRedditMembersRepository.userIsMember(subRedditName, username)){
             subRedditMembersRepository.addMember(subRedditName, user);
             return true;
         }
         return false;
     }
 
-    public boolean leaveSubReddit(String subRedditName, UserResponse userResponse){
-        User user = userRepository.findByUsername(userResponse.getUsername());
+    public boolean leaveSubReddit(String subRedditName){
+        String username = contextHelper.getNameFromAuthToken();
+        User user = userRepository.findByUsername(username);
         if(user!=null && !user.isArchived()
                 && subRedditMembersRepository.subRedditExists(subRedditName)
-                && subRedditMembersRepository.userIsMember(subRedditName, userResponse.getUsername())){
+                && subRedditMembersRepository.userIsMember(subRedditName, username)){
             subRedditMembersRepository.removeMember(subRedditName, user);
             return true;
         }

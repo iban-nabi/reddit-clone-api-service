@@ -42,19 +42,18 @@ public class UserController {
     }
 
     // to include encryption later on
-    @PatchMapping("/update-password/{username}")
-    public ResponseEntity<?> updatePassword(@PathVariable String username,
-                                            @RequestBody ChangePasswordRequest request){
-        boolean success = userService.updatePassword(username, request);
+    @PatchMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest request){
+        boolean success = userService.updatePassword(request);
         if(!success){
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/delete/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable String username){
-        boolean success = userService.deleteUser(username);
+    @PatchMapping("/delete")
+    public ResponseEntity<?> deleteUser(){
+        boolean success = userService.deleteUser();
         if(!success){
             return ResponseEntity.badRequest().build();
         }

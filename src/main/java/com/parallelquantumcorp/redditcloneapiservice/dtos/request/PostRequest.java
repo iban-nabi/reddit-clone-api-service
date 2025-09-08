@@ -10,5 +10,4 @@ public class PostRequest {
     private String title;
     private String content;
     private String tag;
-    private UserResponse user;
 }

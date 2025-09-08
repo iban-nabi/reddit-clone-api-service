@@ -11,7 +11,7 @@ public class CommentResponse {
     private Long id;
     private CommentResponse parent;
     private String content;
-    private UserResponse user;
+    private String username;
     private int upvotes;
     private int downvotes;
     private LocalDateTime createdAt;

@@ -9,10 +9,11 @@ import java.time.LocalDateTime;
 @Setter
 public class PostResponse {
     private Long id;
+    private String subReddit;
     private String title;
     private String content;
     private String tag;
-    private UserResponse user;
+    private String username;
     private int upvotes;
     private int downvotes;
     private LocalDateTime createdAt;

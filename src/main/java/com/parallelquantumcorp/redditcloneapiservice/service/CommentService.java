@@ -1,5 +1,6 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
@@ -28,6 +29,9 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final UserRepository userRepository;
 
+    // helpers
+    private final AuthenticationContextHelper contextHelper;
+
     // to be updated : to include retrieving of mapped items
     public List<CommentResponse> getAllCommentsFromPost(Long postId){
         return commentRepository.getCommentsFromPost(postId)
@@ -47,12 +51,11 @@ public class CommentService {
 
     public boolean createComment(Long postId, CommentRequest commentRequest) {
         Post post = postRepository.getPost(postId);
-
-        User user = userRepository.findByUsername(commentRequest.getUser().getUsername());
+        User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
 
         if(post != null){
-            Comment parent = (commentRequest.getParent()!=null) ?
-                    commentRepository.getComment(commentRequest.getParent().getId()) : null;
+            Comment parent = (commentRequest.getParentCommentId()!=null) ?
+                    commentRepository.getComment(commentRequest.getParentCommentId()) : null;
 
             Comment comment = Comment.builder()
                     .post(post)

@@ -31,10 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token  = authHeader.replace("Bearer", "");
-
+        String token  = authHeader.replace("Bearer ", "");
         Jwt jwt = jwtService.parseStringToken(token);
-        if(jwtService == null || jwt.isExpired()){ // check if jwt token is tampered or expired
+
+        if(jwt==null || jwt.isExpired()){
             filterChain.doFilter(request,response);
             return;
         }
