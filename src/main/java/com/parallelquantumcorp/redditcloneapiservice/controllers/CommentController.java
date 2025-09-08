@@ -13,6 +13,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling Comment-related operations.
+ * This controller provides endpoints for managing comments in a Reddit-like application.
+ *
+ * Endpoints include:
+ * - Getting all comments for a specific post
+ * - Getting a specific comment by ID
+ * - Creating a new comment on a post
+ * - Updating an existing comment
+ * - Soft deleting a comment
+ * - Upvoting a comment
+ * - Downvoting a comment
+ *
+ * All operations that involve finding resources may throw ResourceNotFoundException
+ * if the requested resource does not exist.
+ *
+ * @RestController Marks this class as a REST controller
+ * @RequestMapping("/api/comment") Base path for all endpoints in this controller
+ */
 @RestController
 @RequestMapping("/api/comment")
 @AllArgsConstructor

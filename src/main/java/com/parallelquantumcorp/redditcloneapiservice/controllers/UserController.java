@@ -13,6 +13,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling User-related operations.
+ * This controller provides endpoints for managing user accounts within a Reddit-like application.
+ *
+ * Endpoints include:
+ * - Retrieving a user's details by username
+ * - Searching for users by query
+ * - Registering a new user
+ * - Updating a user's password
+ * - Soft deleting a user account
+ *
+ * Operations that involve fetching, updating, or deleting users may throw
+ * ResourceNotFoundException or IllegalStateException if the requested resource or operation is invalid.
+ *
+ * @RestController Marks this class as a REST controller
+ * @RequestMapping("/api/user") Base path for all endpoints in this controller
+ */
+
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor

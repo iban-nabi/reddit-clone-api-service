@@ -22,6 +22,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    /**
+     * Internal filter method that processes HTTP requests for JWT authentication.
+     * This method validates the JWT token from the Authorization header and sets up authentication if valid.
+     *
+     * The method performs the following checks:
+     * 1. Validates presence of Authorization header with Bearer token
+     * 2. Verifies JWT token validity and expiration
+     * 3. Confirms user has not deleted their account
+     * 
+     * If any validation fails, the request is passed to the next filter without authentication.
+     *
+     * @param request The HTTP servlet request
+     * @param response The HTTP servlet response
+     * @param filterChain The filter chain for passing the request to the next filter
+     * @throws ServletException If there is an error in servlet processing
+     * @throws IOException If there is an I/O error during processing
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -42,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String username = jwt.getSubject();
-        if(userRepository.findByUsername(username)==null){
+        if(userRepository.findByUsername(username).isArchived()){
             filterChain.doFilter(request,response);
             return;
         }

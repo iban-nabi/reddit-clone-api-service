@@ -32,6 +32,13 @@ public class PostService {
     //helper
     private final AuthenticationContextHelper contextHelper;
 
+    /**
+     * Retrieves all non-archived posts from the repository.
+     * 
+     * This method fetches all posts, filters out archived ones, and converts them to DTOs.
+     * 
+     * @return List<PostResponse> A list of non-archived posts converted to PostResponse DTOs
+     */
     public List<PostResponse> getAllPosts() {
         return postRepository.getAll()
                 .stream()
@@ -40,6 +47,12 @@ public class PostService {
                 .toList();
     }
 
+    /**
+     * Retrieves all non-archived posts from a specific subreddit.
+     *
+     * @param subRedditName The name of the subreddit to get posts from
+     * @return A list of PostResponse objects containing the post information
+     */
     public List<PostResponse> getAllSubRedditPosts(String subRedditName) {
         return postRepository.getAllSubRedditPosts(subRedditName)
                 .stream()
@@ -48,6 +61,13 @@ public class PostService {
                 .toList();
     }
 
+    /**
+     * Retrieves a post by its unique identifier.
+     *
+     * @param id The unique identifier of the post to retrieve
+     * @return PostResponse A DTO containing the post information
+     * @throws ResourceNotFoundException if the post doesn't exist or is archived
+     */
     public PostResponse getPostById(Long id) throws ResourceNotFoundException{
         Post post = postRepository.getPost(id);
         if(post==null || post.isArchived()){
@@ -56,6 +76,12 @@ public class PostService {
         return postMapper.toDto(post);
     }
 
+    /**
+     * Searches for posts based on the provided query and returns a list of matching non-archived posts.
+     * 
+     * @param query The search query string to filter posts
+     * @return List<PostResponse> A list of post responses matching the search criteria, excluding archived posts
+     */
     public List<PostResponse> searchPost(String query){
         return postRepository.searchPost(query)
                 .stream()
@@ -64,6 +90,13 @@ public class PostService {
                 .toList();
     }
 
+    /**
+     * Creates a new post in the system, optionally associated with a subreddit.
+     * 
+     * @param postRequest The request object containing post details (title, content, tag)
+     * @param subRedditName The name of the subreddit where the post will be created (can be null for posts not in any subreddit)
+     * @throws ResourceNotFoundException if the specified subreddit doesn't exist or is archived
+     */
     public void createPost(PostRequest postRequest, String subRedditName) throws ResourceNotFoundException{
         SubReddit subReddit;
         User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
@@ -91,6 +124,13 @@ public class PostService {
         postRepository.save(post);
     }
 
+    /**
+     * Updates an existing post with the provided information.
+     * 
+     * @param id The unique identifier of the post to update
+     * @param updatePostRequest The request object containing the updated post information
+     * @throws ResourceNotFoundException if the post is not found or if the post is archived
+     */
     public void updatePost(Long id, UpdatePostRequest updatePostRequest) throws ResourceNotFoundException {
         Post post = postRepository.getPost(id);
 
@@ -105,6 +145,12 @@ public class PostService {
         postRepository.update(id, updatePostRequest);
     }
 
+    /**
+     * Deletes a post with the specified ID.
+     * 
+     * @param id The ID of the post to be deleted
+     * @throws ResourceNotFoundException if the post with given ID is not found or if the post is archived
+     */
     public void deletePost(Long id) throws ResourceNotFoundException {
         Post post = postRepository.getPost(id);
 
@@ -119,6 +165,12 @@ public class PostService {
         postRepository.delete(id);
     }
 
+    /**
+     * Upvotes a post by its ID.
+     * 
+     * @param id The ID of the post to upvote
+     * @throws ResourceNotFoundException if the post with given ID is not found or if the post is archived
+     */
     public void upvotePost(Long id) throws ResourceNotFoundException {
         Post post = postRepository.getPost(id);
 
@@ -133,6 +185,12 @@ public class PostService {
         postRepository.upvote(id);
     }
 
+    /**
+     * Decrements the vote count for a post with the specified ID.
+     * 
+     * @param id The unique identifier of the post to be downvoted
+     * @throws ResourceNotFoundException if the post does not exist or is archived
+     */
     public void downvotePost(Long id) throws ResourceNotFoundException {
         Post post = postRepository.getPost(id);
 

@@ -19,6 +19,15 @@ public class InMemoryUserAuthenticationProvider implements AuthenticationProvide
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+
+    /**
+     * Authenticates a user based on their credentials.
+     * 
+     * @param authentication The authentication object containing user credentials
+     * @return A UsernamePasswordAuthenticationToken if authentication is successful
+     * @throws BadCredentialsException if the user is not found, archived, or if the password is incorrect
+     * @throws AuthenticationException if there are other authentication-related issues
+     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
@@ -38,6 +47,13 @@ public class InMemoryUserAuthenticationProvider implements AuthenticationProvide
         return new UsernamePasswordAuthenticationToken(username,password, Collections.emptyList());
     }
 
+    /**
+     * Determines if this authentication provider supports the given authentication type.
+     * 
+     * @param authentication the Class to check
+     * @return true if the authentication type is supported (specifically, if it's assignable from UsernamePasswordAuthenticationToken),
+     *         false otherwise
+     */
     @Override
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);

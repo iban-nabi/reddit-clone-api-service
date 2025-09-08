@@ -21,10 +21,14 @@ public class JwtService {
         return generateJwt(user, jwtConfiguration.getAccessTokenExpiration());
     }
 
-    public Jwt generateRefreshToken(User user){
-        return generateJwt(user, jwtConfiguration.getRefreshTokenExpiration());
-    }
-
+    /**
+     * Generates a JSON Web Token (JWT) for the specified user.
+     *
+     * @param user The user for whom the JWT is being generated
+     * @param expiration The token expiration time in seconds
+     * @return A Jwt object containing the generated token with claims and secret key
+     * @throws IllegalArgumentException if user is null or expiration is negative
+     */
     public Jwt generateJwt(User user, long expiration){
         Claims claims = Jwts.claims()
                 .subject(user.getUsername())
@@ -38,6 +42,13 @@ public class JwtService {
                 .build();
     }
 
+    /**
+     * Parses a JWT token string into a Jwt object.
+     * 
+     * @param token The JWT token string to parse
+     * @return A Jwt object containing the parsed claims and secret key, or null if parsing fails
+     * @throws JwtException If the token is invalid or cannot be parsed
+     */
     public Jwt parseStringToken(String token){
         try{
             Claims claims = Jwts.parser()

@@ -1,9 +1,14 @@
 package com.parallelquantumcorp.redditcloneapiservice.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.parallelquantumcorp.redditcloneapiservice.auth.AuthenticationContextHelper;
-import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentRequest;
 import com.parallelquantumcorp.redditcloneapiservice.dtos.request.CommentUpdateRequest;
+import com.parallelquantumcorp.redditcloneapiservice.dtos.response.CommentResponse;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.CommentRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.PostRepository;
 import com.parallelquantumcorp.redditcloneapiservice.dummy_repositories.UserRepository;
@@ -12,11 +17,8 @@ import com.parallelquantumcorp.redditcloneapiservice.entities.Post;
 import com.parallelquantumcorp.redditcloneapiservice.entities.User;
 import com.parallelquantumcorp.redditcloneapiservice.exceptions.ResourceNotFoundException;
 import com.parallelquantumcorp.redditcloneapiservice.mappers.CommentMapper;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -33,7 +35,14 @@ public class CommentService {
     // helpers
     private final AuthenticationContextHelper contextHelper;
 
-    // to be updated : to include retrieving of mapped items
+
+    /**
+     * Retrieves all non-archived comments associated with a specific post.
+     * 
+     * @param postId The unique identifier of the post to retrieve comments from
+     * @return List of CommentResponse objects containing comment details
+     *         Empty list if no comments exist or all comments are archived
+     */
     public List<CommentResponse> getAllCommentsFromPost(Long postId){
         return commentRepository.getCommentsFromPost(postId)
                 .stream()
@@ -42,6 +51,13 @@ public class CommentService {
                 .toList();
     }
 
+    /**
+     * Retrieves a specific non-archived comment by its ID.
+     *
+     * @param commentId The unique identifier of the comment to retrieve
+     * @return CommentResponse object containing the comment details
+     * @throws ResourceNotFoundException if the comment doesn't exist or is archived
+     */
     public CommentResponse getComment(Long commentId) throws ResourceNotFoundException{
         Comment comment = commentRepository.getComment(commentId);
         if(comment == null || comment.isArchived()){
@@ -50,6 +66,14 @@ public class CommentService {
         return commentMapper.toDto(comment);
     }
 
+
+    /**
+     * Creates a new comment for a given post. The comment can optionally be a reply to a parent comment.
+     *
+     * @param postId         the ID of the post to which the comment is being added
+     * @param commentRequest the request object containing comment details such as content and optional parent comment ID
+     * @throws ResourceNotFoundException if the specified post or parent comment does not exist
+     */
     public void createComment(Long postId, CommentRequest commentRequest) throws ResourceNotFoundException {
         Post post = postRepository.getPost(postId);
         User user = userRepository.findByUsername(contextHelper.getNameFromAuthToken());
@@ -78,6 +102,15 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    /**
+     * Updates an existing comment with the provided update request.
+     * This method retrieves the comment by its ID, checks if it exists and is not archived,
+     * and then updates it using the provided CommentUpdateRequest
+     *
+     * @param id the ID of the comment to update
+     * @param commentUpdateRequest the request containing updated comment data
+     * @throws ResourceNotFoundException if the comment does not exist or is archived
+     */
     public void updateComment(Long id, CommentUpdateRequest commentUpdateRequest) throws ResourceNotFoundException{
         Comment comment = commentRepository.getComment(id);
 
@@ -92,6 +125,14 @@ public class CommentService {
         commentRepository.update(id, commentUpdateRequest);
     }
 
+    /**
+     * Deletes a comment by its ID.
+     * This method retrieves the comment with the specified ID and deletes it if it exists and is not archived.
+     * If the comment does not exist, or if it is archived, a ResourceNotFoundException is thrown.
+     *
+     * @param id the ID of the comment to delete
+     * @throws ResourceNotFoundException if the comment does not exist or is archived
+     */
     public void deleteComment(Long id) throws ResourceNotFoundException {
         Comment comment = commentRepository.getComment(id);
 
@@ -106,6 +147,12 @@ public class CommentService {
         commentRepository.delete(id);
     }
 
+    /**
+     * Upvotes a comment by its ID.
+     * 
+     * @param id The ID of the comment to upvote
+     * @throws ResourceNotFoundException if the comment is not found or if the comment is archived
+     */
     public void upvoteComment(Long id) throws ResourceNotFoundException {
         Comment comment = commentRepository.getComment(id);
 
@@ -120,6 +167,12 @@ public class CommentService {
         commentRepository.upvote(id);
     }
 
+    /**
+     * Decrements the vote count for a comment by one.
+     *
+     * @param id The unique identifier of the comment to downvote
+     * @throws ResourceNotFoundException if the comment does not exist or if the comment is archived
+     */
     public void downvoteComment(Long id) throws ResourceNotFoundException {
         Comment comment = commentRepository.getComment(id);
 

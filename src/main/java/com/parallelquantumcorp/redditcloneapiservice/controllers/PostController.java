@@ -14,6 +14,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling Post-related operations.
+ * This controller provides endpoints for managing posts within a Reddit-like application.
+ *
+ * Endpoints include:
+ * - Retrieving all posts globally or within a specific subreddit
+ * - Searching for posts by query
+ * - Fetching a specific post by ID
+ * - Creating new posts globally or within a subreddit
+ * - Updating existing posts
+ * - Soft deleting posts
+ * - Upvoting and downvoting posts
+ *
+ * Operations that involve accessing specific posts or subreddits may throw
+ * ResourceNotFoundException if the requested resource does not exist.
+ *
+ * @RestController Marks this class as a REST controller
+ * @RequestMapping("/api/post") Base path for all endpoints in this controller
+ */
 @RestController
 @RequestMapping("/api/post")
 @AllArgsConstructor

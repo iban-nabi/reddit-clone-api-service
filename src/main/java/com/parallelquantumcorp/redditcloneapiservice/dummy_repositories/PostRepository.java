@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Repository class for managing Post entities in memory using a Map-based storage.
+ * This is a temporary implementation for development and testing purposes.
+ */
 @Component
 public class PostRepository {
     private final Map<Long, Post> posts = new LinkedHashMap<>();

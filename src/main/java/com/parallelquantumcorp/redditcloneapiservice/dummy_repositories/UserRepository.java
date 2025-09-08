@@ -6,6 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository class for managing user data in memory using a Map-based storage.
+ * This class provides basic CRUD operations and search functionality for User entities.
+ * Uses soft delete through an archived flag instead of physical deletion.
+ */
 @Component
 public class UserRepository {
     private final Map<String, User> users = new LinkedHashMap<>();

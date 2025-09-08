@@ -9,6 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository class for managing subreddit members and their relationships.
+ * This class handles the storage and operations related to subreddit membership.
+ * 
+ * The class maintains an in-memory map of subreddit names to SubRedditMembers objects,
+ * allowing for efficient member management operations.
+ */
 @Component
 public class SubRedditMembersRepository {
     //<Sub Reddit Name, SubRedditMembers object>

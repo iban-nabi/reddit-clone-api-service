@@ -12,6 +12,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling SubReddit-related operations.
+ * This controller provides endpoints for managing subreddits within a Reddit-like application.
+ *
+ * Endpoints include:
+ * - Retrieving all subreddits
+ * - Searching for subreddits by query
+ * - Creating new subreddits
+ * - Updating existing subreddits
+ * - Soft deleting subreddits
+ *
+ * Operations that involve accessing specific subreddits may throw
+ * ResourceNotFoundException if the requested resource does not exist.
+ *
+ * @RestController Marks this class as a REST controller
+ * @RequestMapping("/api/sub-reddit") Base path for all endpoints in this controller
+ */
+
 @RestController
 @RequestMapping("/api/sub-reddit")
 @AllArgsConstructor

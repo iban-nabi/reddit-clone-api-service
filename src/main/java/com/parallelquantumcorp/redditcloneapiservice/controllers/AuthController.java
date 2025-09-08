@@ -21,6 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * Controller responsible for handling authentication-related endpoints.
+ * This controller manages user authentication and JWT token generation.
+ *
+ * @RestController Indicates that this class serves REST endpoints
+ * @RequestMapping("/api/auth") Base path for all authentication endpoints
+ */
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor

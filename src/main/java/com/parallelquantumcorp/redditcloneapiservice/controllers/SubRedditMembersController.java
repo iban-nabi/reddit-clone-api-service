@@ -10,6 +10,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling SubReddit membership operations.
+ * This controller provides endpoints for managing subreddit memberships within a Reddit-like application.
+ *
+ * Endpoints include:
+ * - Retrieving all members of a specific subreddit
+ * - Joining a subreddit
+ * - Leaving a subreddit
+ *
+ * Operations that involve joining, leaving, or fetching members may throw exceptions
+ * if the requested subreddit does not exist or if the operation is invalid.
+ *
+ * @RestController Marks this class as a REST controller
+ * @RequestMapping (/api/sub-reddit/{subRedditName}) Base path for membership-related endpoints
+ */
+
 @RestController
 @RequestMapping("/api/sub-reddit/{subRedditName}")
 @AllArgsConstructor

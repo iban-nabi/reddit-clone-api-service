@@ -26,6 +26,13 @@ public class SubRedditMembersService {
     // helpers
     private final AuthenticationContextHelper contextHelper;
 
+    /**
+     * Retrieves a list of active (non-archived) members for a specified subreddit.
+     *
+     * @param subRedditName The name of the subreddit to get members from
+     * @return List<UserResponse> A list of user responses containing active member information
+     * @throws ResourceNotFoundException if the specified subreddit does not exist
+     */
     public List<UserResponse> getMembers(String subRedditName) throws ResourceNotFoundException {
         SubRedditMembers subRedditMembers = subRedditMembersRepository
                 .getSubRedditMembers(subRedditName);
@@ -42,6 +49,13 @@ public class SubRedditMembersService {
                 .toList();
     }
 
+    /**
+     * Adds the authenticated user as a member to the specified subreddit.
+     *
+     * @param subRedditName the name of the subreddit to join
+     * @throws ResourceNotFoundException if the specified subreddit does not exist
+     * @throws IllegalStateException if the user is archived or is already a member of the subreddit
+     */
     public void joinSubReddit(String subRedditName) throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);
@@ -61,6 +75,13 @@ public class SubRedditMembersService {
         subRedditMembersRepository.addMember(subRedditName, user);
     }
 
+    /**
+     * Removes a user from a specified subreddit.
+     * 
+     * @param subRedditName The name of the subreddit to leave
+     * @throws ResourceNotFoundException if the specified subreddit does not exist
+     * @throws IllegalStateException if the user is archived or is not a member of the subreddit
+     */
     public void leaveSubReddit(String subRedditName) throws ResourceNotFoundException {
         String username = contextHelper.getNameFromAuthToken();
         User user = userRepository.findByUsername(username);

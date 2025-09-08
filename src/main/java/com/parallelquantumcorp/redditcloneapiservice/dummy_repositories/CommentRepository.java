@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository class for managing Comment entities in memory using a HashMap.
+ * This class provides CRUD operations and additional functionalities for Comment management.
+ */
 @Component
 @AllArgsConstructor
 public class CommentRepository {

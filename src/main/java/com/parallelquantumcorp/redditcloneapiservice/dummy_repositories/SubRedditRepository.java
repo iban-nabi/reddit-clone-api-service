@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository class for managing SubReddit entities using an in-memory Map implementation.
+ * This is a dummy repository for development and testing purposes.
+ */
 @Component
 @AllArgsConstructor
 public class SubRedditRepository {
