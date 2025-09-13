@@ -23,6 +23,7 @@ import javax.crypto.SecretKey;
 public class JwtConfiguration {
     private String secret;
     private long accessTokenExpiration;
+    private long refreshTokenExpiration;
 
     public SecretKey getSecretKey(){
         return Keys.hmacShaKeyFor(secret.getBytes());

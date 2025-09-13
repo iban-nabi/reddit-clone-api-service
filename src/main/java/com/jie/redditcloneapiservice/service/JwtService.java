@@ -21,6 +21,10 @@ public class JwtService {
         return generateJwt(user, jwtConfiguration.getAccessTokenExpiration());
     }
 
+    public Jwt generateRefreshToken(User user){
+        return generateJwt(user, jwtConfiguration.getRefreshTokenExpiration());
+    }
+
     /**
      * Generates a JSON Web Token (JWT) for the specified user.
      *
